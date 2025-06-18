@@ -5,7 +5,9 @@ import com.meli.api_futebolv1.dto.PartidaDTO;
 import com.meli.api_futebolv1.model.Partida;
 import com.meli.api_futebolv1.repository.ClubeRepository;
 import com.meli.api_futebolv1.repository.PartidaRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class PartidaService {
     private final PartidaRepository partidaRepository;
     private final ClubeRepository clubeRepository;
-
     public Partida criarPartida(PartidaDTO dto) {
         Partida partida = new Partida();
 
