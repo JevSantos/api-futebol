@@ -1,19 +1,19 @@
-package com.meli.api_futebolv1.model;
+package com.meli.api_futebol.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-public class Estadio {
+public class Stadium {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long stadiumId;
 
     @Column(nullable = false)
-    private String nome;
+    private String stadiumName;
 
     @Column(nullable = false)
-    private String cidade;
+    private String locationOfStadium;
 }

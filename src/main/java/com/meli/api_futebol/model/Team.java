@@ -1,4 +1,4 @@
-package com.meli.api_futebolv1.model;
+package com.meli.api_futebol.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,21 +9,21 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Where(clause = "ativo = true")
-public class Clube {
+public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long teamId;
 
     @Column(nullable = false)
-    private String nome;
+    private String teamName;
 
     @Column(nullable = false, length = 2)
-    private String estado;
+    private String teamState;
 
-    @Column(name = "data_criacao", nullable = false)
-    private LocalDate dataCriacao;
+    @Column(name = "creation_date", nullable = false)
+    private LocalDate creationDate;
 
     @Column(nullable = false)
-    private boolean ativo = true;
+    private boolean active = true;
 }
