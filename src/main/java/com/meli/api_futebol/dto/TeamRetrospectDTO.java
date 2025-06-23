@@ -2,7 +2,7 @@ package com.meli.api_futebol.dto;
 
 import com.meli.api_futebol.model.Team;
 
-public record RetrospectoClubeDTO(
+public record TeamRetrospectDTO(
         Team team,
         Long totalJogos,
         Long vitorias,

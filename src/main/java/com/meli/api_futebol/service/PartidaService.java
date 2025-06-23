@@ -19,16 +19,16 @@ import java.util.List;
 public class PartidaService {
 
     private final PartidaRepository partidaRepository;
-    private final ClubeRepository clubeRepository;
+    private final TeamRepository teamRepository;
     private final EstadioRepository estadioRepository;
 
     public Match cadastrar(PartidaDTO dto) {
         Match partida = new Match();
 
-        Team mandante = clubeRepository.findById(dto.clubeMandanteId())
+        Team mandante = teamRepository.findById(dto.clubeMandanteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube mandante não encontrado"));
 
-        Team visitante = clubeRepository.findById(dto.clubeVisitanteId())
+        Team visitante = teamRepository.findById(dto.clubeVisitanteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube visitante não encontrado"));
 
         Stadium stadium = estadioRepository.findById(dto.estadioId())
@@ -48,13 +48,13 @@ public class PartidaService {
         Match partida = buscarPorId(id);
 
         if (dto.clubeMandanteId() != null) {
-            Team mandante = clubeRepository.findById(dto.clubeMandanteId())
+            Team mandante = teamRepository.findById(dto.clubeMandanteId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube mandante não encontrado"));
             partida.setHomeTeam(mandante);
         }
 
         if (dto.clubeVisitanteId() != null) {
-            Team visitante = clubeRepository.findById(dto.clubeVisitanteId())
+            Team visitante = teamRepository.findById(dto.clubeVisitanteId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube visitante não encontrado"));
             partida.setAwayTeam(visitante);
         }
@@ -107,21 +107,21 @@ public class PartidaService {
         return partidaRepository.findConfrontos(clube1Id, clube2Id, pageable);
     }
 
-    public RetrospectoConfrontoDTO getRetrospectoConfronto(Long clube1Id, Long clube2Id) {
-        Team clube1 = clubeRepository.findById(clube1Id)
+    public RetrospectVersusDTO getRetrospectoConfronto(Long clube1Id, Long clube2Id) {
+        Team clube1 = teamRepository.findById(clube1Id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube 1 não encontrado"));
 
-        Team clube2 = clubeRepository.findById(clube2Id)
+        Team clube2 = teamRepository.findById(clube2Id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube 2 não encontrado"));
 
         List<Object[]> resultados = partidaRepository.calcularRetrospectoConfronto(clube1Id, clube2Id);
 
         if (resultados.isEmpty()) {
-            return new RetrospectoConfrontoDTO(clube1, clube2, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
+            return new RetrospectVersusDTO(clube1, clube2, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
         }
 
         Object[] stats = resultados.get(0);
-        return new RetrospectoConfrontoDTO(
+        return new RetrospectVersusDTO(
                 clube1,
                 clube2,
                 ((Number) stats[0]).longValue(),   // totalJogos

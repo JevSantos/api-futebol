@@ -38,7 +38,7 @@ public class StadiumController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Stadium>> listar(@PageableDefault(sort = "nome") Pageable pageable) {
+    public ResponseEntity<Page<Stadium>> listar(@PageableDefault(sort = "teamName") Pageable pageable) {
         Page<Stadium> estadios = stadiumService.listar(pageable);
         return ResponseEntity.ok(estadios);
     }

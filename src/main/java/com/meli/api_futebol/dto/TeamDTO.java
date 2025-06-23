@@ -6,14 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
-public record ClubeDTO(
+public record TeamDTO(
         @NotBlank(message = "Nome do clube é obrigatório")
-        String nome,
+        String teamName,
 
-        @NotBlank(message = "Sigla do estado é obrigatória")
-        @Size(min = 2, max = 2, message = "A sigla do estado deve ter 2 caracteres")
-        String estado,
+        @NotBlank(message = "Sigla do teamState é obrigatória")
+        @Size(min = 2, max = 2, message = "A sigla do teamState deve ter 2 caracteres")
+        String teamState,
 
         @NotNull(message = "Data de criação é obrigatória")
-        LocalDate dataCriacao
+        LocalDate creationDate
 ) {}

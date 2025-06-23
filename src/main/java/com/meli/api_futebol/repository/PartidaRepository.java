@@ -1,7 +1,7 @@
 package com.meli.api_futebol.repository;
 
 import com.meli.api_futebol.dto.RankingDTO;
-import com.meli.api_futebol.dto.RetrospectoConfrontoDTO;
+import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.model.Match;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +59,7 @@ public interface PartidaRepository extends JpaRepository<Match, Long> {
             "WHERE (p.homeTeam.teamId = :clubeId AND p.awayTeam.teamId = a.teamId) OR " +
             "(p.awayTeam.teamId = :clubeId AND p.homeTeam.teamId = a.teamId) " +
             "GROUP BY a")
-    List<RetrospectoConfrontoDTO> calcularRetrospectoContraAdversarios(@Param("clubeId") Long clubeId);
+    List<RetrospectVersusDTO> calcularRetrospectoContraAdversarios(@Param("clubeId") Long clubeId);
 
     @Query("SELECT " +
             "COUNT(p) as totalJogos, " +

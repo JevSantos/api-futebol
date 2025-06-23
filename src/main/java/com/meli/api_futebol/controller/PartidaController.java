@@ -2,7 +2,7 @@ package com.meli.api_futebol.controller;
 
 import com.meli.api_futebol.dto.PartidaDTO;
 import com.meli.api_futebol.dto.RankingDTO;
-import com.meli.api_futebol.dto.RetrospectoConfrontoDTO;
+import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.model.Match;
 import com.meli.api_futebol.service.PartidaService;
 import jakarta.validation.Valid;
@@ -79,11 +79,11 @@ public class PartidaController {
     }
 
     @GetMapping("/confrontos/retrospecto")
-    public ResponseEntity<RetrospectoConfrontoDTO> getRetrospectoConfronto(
+    public ResponseEntity<RetrospectVersusDTO> getRetrospectoConfronto(
             @RequestParam Long clube1Id,
             @RequestParam Long clube2Id) {
 
-        RetrospectoConfrontoDTO retrospecto = partidaService.getRetrospectoConfronto(clube1Id, clube2Id);
+        RetrospectVersusDTO retrospecto = partidaService.getRetrospectoConfronto(clube1Id, clube2Id);
         return ResponseEntity.ok(retrospecto);
     }
 
