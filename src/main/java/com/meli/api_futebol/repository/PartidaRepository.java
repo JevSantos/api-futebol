@@ -59,7 +59,7 @@ public interface PartidaRepository extends JpaRepository<Match, Long> {
             "WHERE (p.homeTeam.teamId = :clubeId AND p.awayTeam.teamId = a.teamId) OR " +
             "(p.awayTeam.teamId = :clubeId AND p.homeTeam.teamId = a.teamId) " +
             "GROUP BY a")
-    List<RetrospectVersusDTO> calcularRetrospectoContraAdversarios(@Param("clubeId") Long clubeId);
+    List<RetrospectVersusDTO> calculateRetrospectVersusRivals(@Param("clubeId") Long clubeId);
 
     @Query("SELECT " +
             "COUNT(p) as totalJogos, " +

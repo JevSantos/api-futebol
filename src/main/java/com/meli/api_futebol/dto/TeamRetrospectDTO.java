@@ -4,10 +4,10 @@ import com.meli.api_futebol.model.Team;
 
 public record TeamRetrospectDTO(
         Team team,
-        Long totalJogos,
-        Long vitorias,
-        Long empates,
-        Long derrotas,
-        Long golsFeitos,
-        Long golsSofridos
+        Integer totalPlays,
+        Integer vitorias,
+        Integer empates,
+        Integer derrotas,
+        Integer golsFeitos,
+        Integer golsSofridos
 ) {}

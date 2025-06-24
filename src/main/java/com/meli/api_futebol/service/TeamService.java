@@ -40,7 +40,7 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    public void teamInactivate(Long id) {
+    public void teamDeactivate(Long id) {
         Team team = findTeamById(id);
         team.setActive(false);
         teamRepository.save(team);
@@ -76,23 +76,23 @@ public class TeamService {
 
         List<Object[]> scoreboards = partidaRepository.calcularRetrospecto(clubeId);
         if (scoreboards.isEmpty()) {
-            return new TeamRetrospectDTO(team, 0L, 0L, 0L, 0L, 0L, 0L);
+            return new TeamRetrospectDTO(team, 0, 0, 0, 0, 0, 0);
         }
 
         Object[] statistics = scoreboards.get(0);
         return new TeamRetrospectDTO(
                 team,
-                ((Number) statistics[0]).longValue(),    // Jogos
-                ((Number) statistics[1]).longValue(),    // vitorias
-                ((Number) statistics[2]).longValue(),    // empates
-                ((Number) statistics[3]).longValue(),    // derrotas
-                ((Number) statistics[4]).longValue(),    // golsFeitos
-                ((Number) statistics[5]).longValue()     // golsSofridos
+                ((Number) statistics[0]).intValue(),    // Jogos
+                ((Number) statistics[1]).intValue(),    // vitorias
+                ((Number) statistics[2]).intValue(),    // empates
+                ((Number) statistics[3]).intValue(),    // derrotas
+                ((Number) statistics[4]).intValue(),    // golsFeitos
+                ((Number) statistics[5]).intValue()     // golsSofridos
         );
     }
 
-    public List<RetrospectVersusDTO> getRetrospecAgainstRivals(Long teamId) {
+    public List<RetrospectVersusDTO> getRetrospectVersusRivals(Long teamId) {
         findTeamById(teamId); // Verifica se o clube existe
-        return partidaRepository.calcularRetrospectoContraAdversarios(teamId);
+        return partidaRepository.calculateRetrospectVersusRivals(teamId);
     }
 }

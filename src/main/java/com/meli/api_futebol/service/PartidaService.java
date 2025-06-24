@@ -20,7 +20,7 @@ public class PartidaService {
 
     private final PartidaRepository partidaRepository;
     private final TeamRepository teamRepository;
-    private final EstadioRepository estadioRepository;
+    private final StadiumRepository stadiumRepository;
 
     public Match cadastrar(PartidaDTO dto) {
         Match partida = new Match();
@@ -31,7 +31,7 @@ public class PartidaService {
         Team visitante = teamRepository.findById(dto.clubeVisitanteId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube visitante não encontrado"));
 
-        Stadium stadium = estadioRepository.findById(dto.estadioId())
+        Stadium stadium = stadiumRepository.findById(dto.estadioId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estádio não encontrado"));
 
         partida.setHomeTeam(mandante);
@@ -60,7 +60,7 @@ public class PartidaService {
         }
 
         if (dto.estadioId() != null) {
-            Stadium stadium = estadioRepository.findById(dto.estadioId())
+            Stadium stadium = stadiumRepository.findById(dto.estadioId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estádio não encontrado"));
             partida.setStadium(stadium);
         }
@@ -124,13 +124,13 @@ public class PartidaService {
         return new RetrospectVersusDTO(
                 clube1,
                 clube2,
-                ((Number) stats[0]).longValue(),   // totalJogos
-                ((Number) stats[1]).longValue(),    // vitoriasClube1
-                ((Number) stats[2]).longValue(),    // empates
-                ((Number) stats[3]).longValue(),    // vitoriasClube2
-                ((Number) stats[4]).longValue(),    // golsClube1
-                ((Number) stats[5]).longValue(),    // golsClube2
-                ((Number) stats[6]).longValue()     // saldoClube1
+                ((Number) stats[0]).longValue(),   // totalPlays
+                ((Number) stats[1]).longValue(),    // winsTeam1
+                ((Number) stats[2]).longValue(),    // tiedPlays
+                ((Number) stats[3]).longValue(),    // winsTeam2
+                ((Number) stats[4]).longValue(),    // goalsTeam1
+                ((Number) stats[5]).longValue(),    // goalsTeam2
+                ((Number) stats[6]).longValue()     // goalsBalanceTeam1
         );
     }
 

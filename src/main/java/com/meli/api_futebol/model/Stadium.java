@@ -1,7 +1,7 @@
 package com.meli.api_futebol.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Entity
@@ -15,5 +15,8 @@ public class Stadium {
     private String stadiumName;
 
     @Column(nullable = false)
-    private String locationOfStadium;
+    private String stadiumCity;
+
+    @Column(nullable = false)
+    private String stadiumOwner;
 }
