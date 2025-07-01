@@ -1,6 +1,6 @@
 package com.meli.api_futebol.controller;
 
-import com.meli.api_futebol.dto.EstadioDTO;
+import com.meli.api_futebol.dto.StadiumDTO;
 import com.meli.api_futebol.model.Stadium;
 import com.meli.api_futebol.service.StadiumService;
 import jakarta.validation.Valid;
@@ -20,26 +20,26 @@ public class StadiumController {
     private final StadiumService stadiumService;
 
     @PostMapping
-    public ResponseEntity<Stadium> entryClub(@RequestBody @Valid EstadioDTO dto) {
-        Stadium stadium = stadiumService.cadastrar(dto);
+    public ResponseEntity<Stadium> createStadium(@RequestBody @Valid StadiumDTO dto) {
+        Stadium stadium = stadiumService.createStadium(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(stadium);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Stadium> atualizar(@PathVariable Long id, @RequestBody @Valid EstadioDTO dto) {
-        Stadium stadium = stadiumService.atualizar(id, dto);
+    public ResponseEntity<Stadium> updateStadium(@PathVariable Long id, @RequestBody @Valid StadiumDTO dto) {
+        Stadium stadium = stadiumService.updateStadium(id, dto);
         return ResponseEntity.ok(stadium);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Stadium> buscarPorId(@PathVariable Long id) {
-        Stadium stadium = stadiumService.buscarPorId(id);
+    public ResponseEntity<Stadium> findStadiumById(@PathVariable Long id) {
+        Stadium stadium = stadiumService.findStadiumById(id);
         return ResponseEntity.ok(stadium);
     }
 
     @GetMapping
-    public ResponseEntity<Page<Stadium>> listar(@PageableDefault(sort = "teamName") Pageable pageable) {
-        Page<Stadium> estadios = stadiumService.listar(pageable);
+    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault(sort = "teamName") Pageable pageable) {
+        Page<Stadium> estadios = stadiumService.listStadium(pageable);
         return ResponseEntity.ok(estadios);
     }
 }

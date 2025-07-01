@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 public record TeamDTO(
-        @NotBlank(message = "Nome do clube é obrigatório")
+        @NotBlank(message = "Nome do team é obrigatório")
         String teamName,
 
         @NotBlank(message = "Sigla do teamState é obrigatória")

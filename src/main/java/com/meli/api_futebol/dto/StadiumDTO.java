@@ -2,10 +2,12 @@ package com.meli.api_futebol.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record EstadioDTO(
+public record StadiumDTO(
         @NotBlank(message = "Nome do estádio é obrigatório")
-        String nome,
-
+        String stadiumName,
         @NotBlank(message = "Cidade do estádio é obrigatória")
-        String cidade
+        String stadiumCity,
+        @NotBlank(message = "O nome proprietário do estádio é obrigatório")
+        String stadiumOwner
+
 ) {}

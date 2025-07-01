@@ -19,7 +19,7 @@ public class Team {
     @Column(nullable = false, length = 2)
     private String teamState;
 
-    @Column(name = "creation-date", nullable = false)
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate;
 
     @Column(nullable = false)
