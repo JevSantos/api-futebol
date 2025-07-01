@@ -5,7 +5,7 @@ import com.meli.api_futebol.dto.TeamRetrospectDTO;
 import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.model.Team;
 import com.meli.api_futebol.repository.TeamRepository;
-import com.meli.api_futebol.repository.PartidaRepository;
+import com.meli.api_futebol.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final PartidaRepository partidaRepository;
+    private final MatchRepository matchRepository;
 
     public Team registryTeam(TeamDTO dto) {
         Team team = new Team();
@@ -74,7 +74,7 @@ public class TeamService {
     public TeamRetrospectDTO getRetrospect(Long clubeId) {
         Team team = findTeamById(clubeId);
 
-        List<Object[]> scoreboards = partidaRepository.calcularRetrospecto(clubeId);
+        List<Object[]> scoreboards = matchRepository.calculateRetrospect(clubeId);
         if (scoreboards.isEmpty()) {
             return new TeamRetrospectDTO(team, 0, 0, 0, 0, 0, 0);
         }
@@ -83,16 +83,16 @@ public class TeamService {
         return new TeamRetrospectDTO(
                 team,
                 ((Number) statistics[0]).intValue(),    // Jogos
-                ((Number) statistics[1]).intValue(),    // vitorias
-                ((Number) statistics[2]).intValue(),    // empates
-                ((Number) statistics[3]).intValue(),    // derrotas
-                ((Number) statistics[4]).intValue(),    // golsFeitos
-                ((Number) statistics[5]).intValue()     // golsSofridos
+                ((Number) statistics[1]).intValue(),    // victories
+                ((Number) statistics[2]).intValue(),    // drawsQtd
+                ((Number) statistics[3]).intValue(),    // loses
+                ((Number) statistics[4]).intValue(),    // goalsPro
+                ((Number) statistics[5]).intValue()     // goalsCon
         );
     }
 
     public List<RetrospectVersusDTO> getRetrospectVersusRivals(Long teamId) {
-        findTeamById(teamId); // Verifica se o clube existe
-        return partidaRepository.calculateRetrospectVersusRivals(teamId);
+        findTeamById(teamId); // Verifica se o team existe
+        return matchRepository.calculateRetrospectVersusRivals(teamId);
     }
 }

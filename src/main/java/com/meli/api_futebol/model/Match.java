@@ -15,11 +15,11 @@ public class Match {
 
     @ManyToOne
     @JoinColumn(name = "home_team_id", nullable = false)
-    private Team homeTeam;
+    private Team homeTeamId;
 
     @ManyToOne
     @JoinColumn(name = "away_team_id", nullable = false)
-    private Team awayTeam;
+    private Team awayTeamId;
 
     @Column(nullable = false)
     private Integer goalsHomeTeam;
@@ -28,9 +28,9 @@ public class Match {
     private Integer goalsAwayTeam;
 
     @ManyToOne
-    @JoinColumn(name = "estadio_id", nullable = false)
+    @JoinColumn(name = "stadium_id", nullable = false)
     private Stadium stadium;
 
     @Column(nullable = false)
-    private LocalDateTime dateAndTime;
+    private LocalDateTime matchDateTime;
 }
