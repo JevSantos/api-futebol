@@ -39,7 +39,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     @Query("SELECT p FROM Match p WHERE " +
             "(p.homeTeamId.teamId = :teamId OR p.awayTeamId.teamId = :teamId) AND " +
-            "p.stadium.stadiumId = :stadiumId")
+            "p.stadiumId = :stadiumId")
     Page<Match> findByHomeTeamIdOrAwayTeamIdAndStadiumId(
             @Param("teamId") Long teamId, @Param("stadiumId") Long stadiumId, Pageable pageable);
 

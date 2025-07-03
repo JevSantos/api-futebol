@@ -63,7 +63,7 @@ public class MatchController {
             @RequestParam Long teamId,
             @PageableDefault Pageable pageable) {
 
-        Page<Match> partidas = matchService.listarGoleadas(teamId, pageable);
+        Page<Match> partidas = matchService.listLandslides(teamId, pageable);
         return ResponseEntity.ok(partidas);
     }
 

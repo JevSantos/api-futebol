@@ -65,7 +65,7 @@ public class TeamController {
     }
 
     @GetMapping("/{id}/retrospecto-adversarios")
-    public ResponseEntity<List<RetrospectVersusDTO>> getRetrospecAgainstRivals(@PathVariable Long id) {
+    public ResponseEntity<List<RetrospectVersusDTO>> getRetrospectAgainstRivals(@PathVariable Long id) {
         List<RetrospectVersusDTO> retrospectVersus = teamService.getRetrospectVersusRivals(id);
         return ResponseEntity.ok(retrospectVersus);
     }

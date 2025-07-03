@@ -46,7 +46,7 @@ public class MatchService {
         match.setAwayTeamId(awayTeam);
         match.setGoalsHomeTeam(dto.goalsHomeTeam());
         match.setGoalsAwayTeam(dto.goalsAwayTeam());
-        match.setStadium(stadium);
+        match.setStadiumId(stadium);
         match.setMatchDateTime(dto.matchDateTime() != null ? dto.matchDateTime() : LocalDateTime.now());
 
         return matchRepository.save(match);
@@ -71,7 +71,7 @@ public class MatchService {
         }
         if (dto.stadiumId() != null) {
             Stadium stadium = findStadiumById(dto.stadiumId(), "Estádio não encontrado");
-            match.setStadium(stadium);
+            match.setStadiumId(stadium);
         }
         if (dto.goalsHomeTeam() != null) match.setGoalsHomeTeam(dto.goalsHomeTeam());
         if (dto.goalsAwayTeam() != null) match.setGoalsAwayTeam(dto.goalsAwayTeam());
@@ -101,7 +101,7 @@ public class MatchService {
         return matchRepository.findAll(pageable);
     }
 
-    public Page<Match> listarGoleadas(Long teamId, Pageable pageable) {
+    public Page<Match> listLandslides(Long teamId, Pageable pageable) {
         if (teamId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID do team é obrigatório para filtrar goleadas");
         }

@@ -11,14 +11,14 @@ public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long match_id;
+    private Long matchId;
 
     @ManyToOne
-    @JoinColumn(name = "home_team_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Team homeTeamId;
 
     @ManyToOne
-    @JoinColumn(name = "away_team_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Team awayTeamId;
 
     @Column(nullable = false)
@@ -28,8 +28,8 @@ public class Match {
     private Integer goalsAwayTeam;
 
     @ManyToOne
-    @JoinColumn(name = "stadium_id", nullable = false)
-    private Stadium stadium;
+    @JoinColumn(nullable = false)
+    private Stadium stadiumId;
 
     @Column(nullable = false)
     private LocalDateTime matchDateTime;
