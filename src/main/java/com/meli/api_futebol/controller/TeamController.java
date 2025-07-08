@@ -24,20 +24,20 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping
-    public ResponseEntity<Team> cadastrar(@RequestBody @Valid TeamDTO dto) {
+    public ResponseEntity<Team> create(@RequestBody @Valid TeamDTO dto) {
         Team team = teamService.registryTeam(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(team);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Team> atualizar(@PathVariable Long id, @RequestBody @Valid TeamDTO dto) {
-        Team clube = teamService.teamUpdate(id, dto);
-        return ResponseEntity.ok(clube);
+    public ResponseEntity<Team> update(@PathVariable Long id, @RequestBody @Valid TeamDTO dto) {
+        Team team = teamService.teamUpdate(id, dto);
+        return ResponseEntity.ok(team);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> inativar(@PathVariable Long id) {
-        teamService.teamInactivate(id);
+    public ResponseEntity<Void> deactivate(@PathVariable Long id) {
+        teamService.teamDeactivate(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -65,8 +65,8 @@ public class TeamController {
     }
 
     @GetMapping("/{id}/retrospecto-adversarios")
-    public ResponseEntity<List<RetrospectVersusDTO>> getRetrospectoContraAdversarios(@PathVariable Long id) {
-        List<RetrospectVersusDTO> retrospectos = teamService.getRetrospecAgainstRivals(id);
-        return ResponseEntity.ok(retrospectos);
+    public ResponseEntity<List<RetrospectVersusDTO>> getRetrospectAgainstRivals(@PathVariable Long id) {
+        List<RetrospectVersusDTO> retrospectVersus = teamService.getRetrospectVersusRivals(id);
+        return ResponseEntity.ok(retrospectVersus);
     }
 }

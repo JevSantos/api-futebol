@@ -19,10 +19,10 @@ public class Team {
     @Column(nullable = false, length = 2)
     private String teamState;
 
-    @Column(name = "creation-date", nullable = false)
+    @Column(nullable = false)
     private LocalDate creationDate;
 
-    @Column(nullable = false)
+    @Column(name = "active",nullable = false)
     private boolean active = true;
 
 }

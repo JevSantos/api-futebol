@@ -1,0 +1,43 @@
+# version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: api_futebol
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: api_futebol
+      MYSQL_USER: soccer
+      MYSQL_PASSWORD: soccer
+    ports:
+      - "3306:3306"
+    volumes:
+      - api-futebol:/var/lib/mysql
+      -  ./src/main/resources/db/data.sql:/docker-entrypoint-initdb.d/data.sql
+    healthcheck: # Verifica do container
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+#    networks:
+#      - soccer_net
+#
+#  api:
+#    build: .
+#    container_name: api-futebol
+#    depends_on:
+#      - mysql
+#    ports:
+#      - "8000:8000"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/soccer_db?createDatabaseIfNotExist=true
+#      SPRING_DATASOURCE_USERNAME: soccer
+#      SPRING_DATASOURCE_PASSWORD: soccer
+#    networks:
+#      - soccer_net
+#
+volumes:
+  api-futebol:
+#
+#networks:
+#  soccer_net:
+#    driver: bridge
