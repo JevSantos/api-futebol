@@ -38,4 +38,10 @@ public class StadiumService {
     public Page<Stadium> listStadium(@PageableDefault(sort = "stadiumName") Pageable pageable) {
         return stadiumRepository.findAll(pageable);
     }
+
+    public void deleteStadium(Long id) {
+        Stadium stadium = findStadiumById(id);
+        stadiumRepository.delete(stadium);
+    }
+
 }

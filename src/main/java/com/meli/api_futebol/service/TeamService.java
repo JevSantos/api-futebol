@@ -5,7 +5,7 @@ import com.meli.api_futebol.dto.TeamRetrospectDTO;
 import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.model.Team;
 import com.meli.api_futebol.repository.TeamRepository;
-import com.meli.api_futebol.repository.MatchRepository;
+import com.meli.api_futebol.repository.SoccerMatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final MatchRepository matchRepository;
+    private final SoccerMatchRepository soccerMatchRepository;
 
     public Team registryTeam(TeamDTO dto) {
         Team team = new Team();
@@ -46,6 +46,12 @@ public class TeamService {
         teamRepository.save(team);
     }
 
+    public void teamActivate(Long id) {
+        Team team = findTeamById(id);
+        team.setActive(true);
+        teamRepository.save(team);
+    }
+
     public Team findTeamById(Long id) {
         return teamRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube não encontrado"));
@@ -53,17 +59,17 @@ public class TeamService {
 
     public Page<Team> listTeam(String name, String state, Boolean active, Pageable pageable) {
         if (name != null && state != null && active != null) {
-            return teamRepository.findByNameContainingIgnoreCaseAndStateAndActive(name, state, active, pageable);
+            return teamRepository.findByTeamNameContainingIgnoreCaseAndTeamStateAndActive(name, state, active, pageable);
         } else if (name != null && state != null) {
-            return teamRepository.findByNameContainingIgnoreCaseAndState(name, state, pageable);
+            return teamRepository.findByTeamNameContainingIgnoreCaseAndTeamState(name, state, pageable);
         } else if (name != null && active != null) {
-            return teamRepository.findByNameContainingIgnoreCaseAndActive(name, active, pageable);
+            return teamRepository.findByTeamNameContainingIgnoreCaseAndActive(name, active, pageable);
         } else if (state != null && active != null) {
-            return teamRepository.findByStateAndActive(state, active, pageable);
+            return teamRepository.findByTeamStateAndActive(state, active, pageable);
         } else if (name != null) {
-            return teamRepository.findByNameContainingIgnoreCase(name, pageable);
+            return teamRepository.findByTeamNameContainingIgnoreCase(name, pageable);
         } else if (state != null) {
-            return teamRepository.findByState(state, pageable);
+            return teamRepository.findByTeamState(state, pageable);
         } else if (active != null) {
             return teamRepository.findByActive(active, pageable);
         }
@@ -74,12 +80,12 @@ public class TeamService {
     public TeamRetrospectDTO getRetrospect(Long clubeId) {
         Team team = findTeamById(clubeId);
 
-        List<Object[]> scoreboards = matchRepository.calculateRetrospect(clubeId);
+        List<Object[]> scoreboards = soccerMatchRepository.calculateRetrospect(clubeId);
         if (scoreboards.isEmpty()) {
             return new TeamRetrospectDTO(team, 0, 0, 0, 0, 0, 0);
         }
 
-        Object[] statistics = scoreboards.get(0);
+        Object[] statistics = scoreboards.getFirst();
         return new TeamRetrospectDTO(
                 team,
                 ((Number) statistics[0]).intValue(),    // Jogos
@@ -93,6 +99,6 @@ public class TeamService {
 
     public List<RetrospectVersusDTO> getRetrospectVersusRivals(Long teamId) {
         findTeamById(teamId); // Verifica se o team existe
-        return matchRepository.calculateRetrospectVersusRivals(teamId);
+        return soccerMatchRepository.calculateRetrospectVersusRivals(teamId);
     }
 }

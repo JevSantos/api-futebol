@@ -4,7 +4,7 @@ import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.dto.TeamDTO;
 import com.meli.api_futebol.dto.TeamRetrospectDTO;
 import com.meli.api_futebol.model.Team;
-import com.meli.api_futebol.repository.MatchRepository;
+import com.meli.api_futebol.repository.SoccerMatchRepository;
 import com.meli.api_futebol.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class TeamServiceTest {
     private TeamRepository teamRepository;
 
     @Mock
-    private MatchRepository matchRepository;
+    private SoccerMatchRepository soccerMatchRepository;
 
     @InjectMocks
     private TeamService teamService;
@@ -47,7 +47,7 @@ class TeamServiceTest {
     @BeforeEach
     void setUp() {
         team = new Team();
-        team.setTeamId(1L);
+        team.setId(1L);
         team.setTeamName("Flamengo");
         team.setTeamState("RJ");
         team.setCreationDate(LocalDate.of(1895, 11, 17));
@@ -81,7 +81,7 @@ class TeamServiceTest {
     @DisplayName("Deve atualizar um time existente com sucesso")
     void shouldUpdateTeamSuccessfully() {
         Team updatedTeam = new Team();
-        updatedTeam.setTeamId(1L);
+        updatedTeam.setId(1L);
         updatedTeam.setTeamName("Flamengo Atualizado");
         updatedTeam.setTeamState("MG");
         updatedTeam.setCreationDate(LocalDate.of(1900, 1, 1));
@@ -123,7 +123,7 @@ class TeamServiceTest {
     @DisplayName("Deve desativar um time com sucesso")
     void shouldDeactivateTeamSuccessfully() {
         Team activeTeam = new Team();
-        activeTeam.setTeamId(1L);
+        activeTeam.setId(1L);
         activeTeam.setActive(true);
 
         when(teamRepository.findById(1L)).thenReturn(Optional.of(activeTeam));
@@ -157,7 +157,7 @@ class TeamServiceTest {
         Team foundTeam = teamService.findTeamById(1L);
 
         assertNotNull(foundTeam);
-        assertEquals(team.getTeamId(), foundTeam.getTeamId());
+        assertEquals(team.getId(), foundTeam.getId());
         verify(teamRepository, times(1)).findById(1L);
     }
 
@@ -191,26 +191,26 @@ class TeamServiceTest {
     @DisplayName("Deve listar times filtrando por nome")
     void shouldListTeamsFilteredByName() {
         Page<Team> teamPage = new PageImpl<>(Collections.singletonList(team));
-        when(teamRepository.findByNameContainingIgnoreCase("Flamengo", pageable)).thenReturn(teamPage);
+        when(teamRepository.findByTeamNameContainingIgnoreCase("Flamengo", pageable)).thenReturn(teamPage);
 
         Page<Team> result = teamService.listTeam("Flamengo", null, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(teamRepository, times(1)).findByNameContainingIgnoreCase("Flamengo", pageable);
+        verify(teamRepository, times(1)).findByTeamNameContainingIgnoreCase("Flamengo", pageable);
     }
 
     @Test
     @DisplayName("Deve listar times filtrando por estado")
     void shouldListTeamsFilteredByState() {
         Page<Team> teamPage = new PageImpl<>(Collections.singletonList(team));
-        when(teamRepository.findByState("RJ", pageable)).thenReturn(teamPage);
+        when(teamRepository.findByTeamState("RJ", pageable)).thenReturn(teamPage);
 
         Page<Team> result = teamService.listTeam(null, "RJ", null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(teamRepository, times(1)).findByState("RJ", pageable);
+        verify(teamRepository, times(1)).findByTeamState("RJ", pageable);
     }
 
     @Test
@@ -230,52 +230,52 @@ class TeamServiceTest {
     @DisplayName("Deve listar times filtrando por nome e estado")
     void shouldListTeamsFilteredByNameAndState() {
         Page<Team> teamPage = new PageImpl<>(Collections.singletonList(team));
-        when(teamRepository.findByNameContainingIgnoreCaseAndState("Flamengo", "RJ", pageable)).thenReturn(teamPage);
+        when(teamRepository.findByTeamNameContainingIgnoreCaseAndTeamState("Flamengo", "RJ", pageable)).thenReturn(teamPage);
 
         Page<Team> result = teamService.listTeam("Flamengo", "RJ", null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(teamRepository, times(1)).findByNameContainingIgnoreCaseAndState("Flamengo", "RJ", pageable);
+        verify(teamRepository, times(1)).findByTeamNameContainingIgnoreCaseAndTeamState("Flamengo", "RJ", pageable);
     }
 
     @Test
     @DisplayName("Deve listar times filtrando por nome e ativo")
     void shouldListTeamsFilteredByNameAndActive() {
         Page<Team> teamPage = new PageImpl<>(Collections.singletonList(team));
-        when(teamRepository.findByNameContainingIgnoreCaseAndActive("Flamengo", true, pageable)).thenReturn(teamPage);
+        when(teamRepository.findByTeamNameContainingIgnoreCaseAndActive("Flamengo", true, pageable)).thenReturn(teamPage);
 
         Page<Team> result = teamService.listTeam("Flamengo", null, true, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(teamRepository, times(1)).findByNameContainingIgnoreCaseAndActive("Flamengo", true, pageable);
+        verify(teamRepository, times(1)).findByTeamNameContainingIgnoreCaseAndActive("Flamengo", true, pageable);
     }
 
     @Test
     @DisplayName("Deve listar times filtrando por estado e ativo")
     void shouldListTeamsFilteredByStateAndActive() {
         Page<Team> teamPage = new PageImpl<>(Collections.singletonList(team));
-        when(teamRepository.findByStateAndActive("RJ", true, pageable)).thenReturn(teamPage);
+        when(teamRepository.findByTeamStateAndActive("RJ", true, pageable)).thenReturn(teamPage);
 
         Page<Team> result = teamService.listTeam(null, "RJ", true, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(teamRepository, times(1)).findByStateAndActive("RJ", true, pageable);
+        verify(teamRepository, times(1)).findByTeamStateAndActive("RJ", true, pageable);
     }
 
     @Test
     @DisplayName("Deve listar times filtrando por nome, estado e ativo")
     void shouldListTeamsFilteredByNameStateAndActive() {
         Page<Team> teamPage = new PageImpl<>(Collections.singletonList(team));
-        when(teamRepository.findByNameContainingIgnoreCaseAndStateAndActive("Flamengo", "RJ", true, pageable)).thenReturn(teamPage);
+        when(teamRepository.findByTeamNameContainingIgnoreCaseAndTeamStateAndActive("Flamengo", "RJ", true, pageable)).thenReturn(teamPage);
 
         Page<Team> result = teamService.listTeam("Flamengo", "RJ", true, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(teamRepository, times(1)).findByNameContainingIgnoreCaseAndStateAndActive("Flamengo", "RJ", true, pageable);
+        verify(teamRepository, times(1)).findByTeamNameContainingIgnoreCaseAndTeamStateAndActive("Flamengo", "RJ", true, pageable);
     }
 
     @Test
@@ -283,7 +283,7 @@ class TeamServiceTest {
     void shouldReturnTeamRetrospectSuccessfully() {
         Object[] stats = {10, 5, 3, 2, 20, 10}; // totalPlays, victories, ties, loses, goalsPro, goalsCon
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-        when(matchRepository.calculateRetrospect(1L)).thenReturn(Collections.singletonList(stats));
+        when(soccerMatchRepository.calculateRetrospect(1L)).thenReturn(Collections.singletonList(stats));
 
         TeamRetrospectDTO retrospect = teamService.getRetrospect(1L);
 
@@ -296,14 +296,14 @@ class TeamServiceTest {
         assertEquals(20, retrospect.goalsPro());
         assertEquals(10, retrospect.goalsCon());
         verify(teamRepository, times(1)).findById(1L);
-        verify(matchRepository, times(1)).calculateRetrospect(1L);
+        verify(soccerMatchRepository, times(1)).calculateRetrospect(1L);
     }
 
     @Test
     @DisplayName("Deve retornar retrospecto do time com zero quando não houver partidas")
     void shouldReturnZeroRetrospectWhenNoMatches() {
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-        when(matchRepository.calculateRetrospect(1L)).thenReturn(Collections.emptyList());
+        when(soccerMatchRepository.calculateRetrospect(1L)).thenReturn(Collections.emptyList());
 
         TeamRetrospectDTO retrospect = teamService.getRetrospect(1L);
 
@@ -316,7 +316,7 @@ class TeamServiceTest {
         assertEquals(0, retrospect.goalsPro());
         assertEquals(0, retrospect.goalsCon());
         verify(teamRepository, times(1)).findById(1L);
-        verify(matchRepository, times(1)).calculateRetrospect(1L);
+        verify(soccerMatchRepository, times(1)).calculateRetrospect(1L);
     }
 
     @Test
@@ -329,14 +329,14 @@ class TeamServiceTest {
 
         assertEquals("404 NOT_FOUND \"Clube não encontrado\"", exception.getMessage());
         verify(teamRepository, times(1)).findById(99L);
-        verify(matchRepository, never()).calculateRetrospect(anyLong());
+        verify(soccerMatchRepository, never()).calculateRetrospect(anyLong());
     }
 
     @Test
     @DisplayName("Deve retornar retrospecto contra adversários com sucesso")
     void shouldReturnRetrospectVersusRivalsSuccessfully() {
         Team rivalTeam = new Team();
-        rivalTeam.setTeamId(2L);
+        rivalTeam.setId(2L);
         rivalTeam.setTeamName("Palmeiras");
 
         RetrospectVersusDTO retrospectDTO = new RetrospectVersusDTO(
@@ -345,7 +345,7 @@ class TeamServiceTest {
         List<RetrospectVersusDTO> retrospectList = Collections.singletonList(retrospectDTO);
 
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-        when(matchRepository.calculateRetrospectVersusRivals(1L)).thenReturn(retrospectList);
+        when(soccerMatchRepository.calculateRetrospectVersusRivals(1L)).thenReturn(retrospectList);
 
         List<RetrospectVersusDTO> result = teamService.getRetrospectVersusRivals(1L);
 
@@ -354,21 +354,21 @@ class TeamServiceTest {
         assertEquals(1, result.size());
         assertEquals(retrospectDTO, result.get(0));
         verify(teamRepository, times(1)).findById(1L);
-        verify(matchRepository, times(1)).calculateRetrospectVersusRivals(1L);
+        verify(soccerMatchRepository, times(1)).calculateRetrospectVersusRivals(1L);
     }
 
     @Test
     @DisplayName("Deve retornar lista vazia de retrospecto contra adversários quando não houver partidas")
     void shouldReturnEmptyListWhenNoRetrospectVersusRivals() {
         when(teamRepository.findById(1L)).thenReturn(Optional.of(team));
-        when(matchRepository.calculateRetrospectVersusRivals(1L)).thenReturn(Collections.emptyList());
+        when(soccerMatchRepository.calculateRetrospectVersusRivals(1L)).thenReturn(Collections.emptyList());
 
         List<RetrospectVersusDTO> result = teamService.getRetrospectVersusRivals(1L);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(teamRepository, times(1)).findById(1L);
-        verify(matchRepository, times(1)).calculateRetrospectVersusRivals(1L);
+        verify(soccerMatchRepository, times(1)).calculateRetrospectVersusRivals(1L);
     }
 
     @Test
@@ -381,6 +381,6 @@ class TeamServiceTest {
 
         assertEquals("404 NOT_FOUND \"Clube não encontrado\"", exception.getMessage());
         verify(teamRepository, times(1)).findById(99L);
-        verify(matchRepository, never()).calculateRetrospectVersusRivals(anyLong());
+        verify(soccerMatchRepository, never()).calculateRetrospectVersusRivals(anyLong());
     }
 }

@@ -11,7 +11,7 @@ public record TeamDTO(
         String teamName,
 
         @NotBlank(message = "Sigla do teamState é obrigatória")
-        @Size(min = 2, max = 2, message = "A sigla do teamState deve ter 2 caracteres")
+        @Size(min = 2, max = 2, message = "A sigla do estado do time deve ter 2 caracteres")
         String teamState,
 
         @NotNull(message = "Data de criação é obrigatória")

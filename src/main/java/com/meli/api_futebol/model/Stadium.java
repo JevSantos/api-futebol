@@ -11,12 +11,12 @@ public class Stadium {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long stadiumId;
 
-    @Column(nullable = false)
+    @Column(name = "stadium_name",nullable = false)
     private String stadiumName;
 
-    @Column(nullable = false)
+    @Column(name = "stadium_city",nullable = false)
     private String stadiumCity;
 
-    @Column(nullable = false)
+    @Column(name = "stadium_owner",nullable = false)
     private String stadiumOwner;
 }
