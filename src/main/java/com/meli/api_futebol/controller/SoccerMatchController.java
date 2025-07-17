@@ -1,10 +1,10 @@
 package com.meli.api_futebol.controller;
 
-import com.meli.api_futebol.dto.MatchDTO;
+import com.meli.api_futebol.dto.SoccerMatchDTO;
 import com.meli.api_futebol.dto.RankingDTO;
 import com.meli.api_futebol.dto.RetrospectVersusDTO;
-import com.meli.api_futebol.model.Match;
-import com.meli.api_futebol.service.MatchService;
+import com.meli.api_futebol.model.SoccerMatch;
+import com.meli.api_futebol.service.SoccerMatchService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,60 +20,60 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/partidas")
 @RequiredArgsConstructor
-public class MatchController {
+public class SoccerMatchController {
 
-    private final MatchService matchService;
+    private final SoccerMatchService soccerMatchService;
 
     @PostMapping
-    public ResponseEntity<Match> create(@RequestBody @Valid MatchDTO dto) {
-        Match match = matchService.createMatch(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(match);
+    public ResponseEntity<SoccerMatch> create(@RequestBody @Valid SoccerMatchDTO dto) {
+        SoccerMatch soccermatch = soccerMatchService.createMatch(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(soccermatch);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Match> update(@PathVariable Long id, @RequestBody @Valid MatchDTO dto) {
-        Match match = matchService.updateMatch(id, dto);
-        return ResponseEntity.ok(match);
+    public ResponseEntity<SoccerMatch> update(@PathVariable Long id, @RequestBody @Valid SoccerMatchDTO dto) {
+        SoccerMatch soccermatch = soccerMatchService.updateMatch(id, dto);
+        return ResponseEntity.ok(soccermatch);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
-        matchService.removeMatch(id);
+        soccerMatchService.removeMatch(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Match> findById(@PathVariable Long id) {
-        Match match = matchService.findMatchById(id);
-        return ResponseEntity.ok(match);
+    public ResponseEntity<SoccerMatch> findById(@PathVariable Long id) {
+        SoccerMatch soccermatch = soccerMatchService.findMatchById(id);
+        return ResponseEntity.ok(soccermatch);
     }
 
-    @GetMapping
-    public ResponseEntity<Page<Match>> list(
+    @GetMapping("/partidas")
+    public ResponseEntity<Page<SoccerMatch>> list(
             @RequestParam(required = false) Long teamId,
             @RequestParam(required = false) Long stadiumId,
             @PageableDefault(sort = "matchDateTime", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<Match> matches = matchService.listMatch(teamId, stadiumId, pageable);
+        Page<SoccerMatch> matches = soccerMatchService.listMatch(teamId, stadiumId, pageable);
         return ResponseEntity.ok(matches);
     }
 
     @GetMapping("/goleadas")
-    public ResponseEntity<Page<Match>> listLandslides(
+    public ResponseEntity<Page<SoccerMatch>> listLandslides(
             @RequestParam Long teamId,
             @PageableDefault Pageable pageable) {
 
-        Page<Match> partidas = matchService.listLandslides(teamId, pageable);
+        Page<SoccerMatch> partidas = soccerMatchService.listLandslides(teamId, pageable);
         return ResponseEntity.ok(partidas);
     }
 
     @GetMapping("/confrontos")
-    public ResponseEntity<Page<Match>> listPlays(
+    public ResponseEntity<Page<SoccerMatch>> listPlays(
             @RequestParam Long team1Id,
             @RequestParam Long team2Id,
             @RequestParam(required = false) Boolean goleadas,
             @PageableDefault(sort = "matchDateTime", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Match> matches = matchService.listClashes(team1Id, team2Id, goleadas, pageable);
+        Page<SoccerMatch> matches = soccerMatchService.listClashes(team1Id, team2Id, goleadas, pageable);
         return ResponseEntity.ok(matches);
     }
 
@@ -81,7 +81,7 @@ public class MatchController {
     public ResponseEntity<RetrospectVersusDTO> getRetrospectPlays(
             @RequestParam Long team1Id,
             @RequestParam Long team2Id) {
-        RetrospectVersusDTO retrospectPlays = matchService.getRetrospectPlays(team1Id, team2Id);
+        RetrospectVersusDTO retrospectPlays = soccerMatchService.getRetrospectPlays(team1Id, team2Id);
         return ResponseEntity.ok(retrospectPlays);
     }
 
@@ -89,7 +89,7 @@ public class MatchController {
     public ResponseEntity<List<RankingDTO>> getRanking(
             @RequestParam(defaultValue = "pontos") String criteria) {
 
-        List<RankingDTO> ranking = matchService.getRanking(criteria);
+        List<RankingDTO> ranking = soccerMatchService.getRanking(criteria);
         return ResponseEntity.ok(ranking);
     }
 }

@@ -1,12 +1,12 @@
 package com.meli.api_futebol.service;
 
-import com.meli.api_futebol.dto.MatchDTO;
+import com.meli.api_futebol.dto.SoccerMatchDTO;
 import com.meli.api_futebol.dto.RankingDTO;
 import com.meli.api_futebol.dto.RetrospectVersusDTO;
-import com.meli.api_futebol.model.Match;
+import com.meli.api_futebol.model.SoccerMatch;
 import com.meli.api_futebol.model.Stadium;
 import com.meli.api_futebol.model.Team;
-import com.meli.api_futebol.repository.MatchRepository;
+import com.meli.api_futebol.repository.SoccerMatchRepository;
 import com.meli.api_futebol.repository.StadiumRepository;
 import com.meli.api_futebol.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,56 +33,56 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MatchServiceTest {
+class SoccerMatchServiceTest {
 
     @Mock
-    private MatchRepository matchRepository;
+    private SoccerMatchRepository soccerMatchRepository;
     @Mock
     private TeamRepository teamRepository;
     @Mock
     private StadiumRepository stadiumRepository;
 
     @InjectMocks
-    private MatchService matchService;
+    private SoccerMatchService soccerMatchService;
 
     private Team homeTeam;
     private Team awayTeam;
     private Stadium stadium;
-    private MatchDTO matchDTO;
-    private Match match;
+    private SoccerMatchDTO soccerMatchDTO;
+    private SoccerMatch soccermatch;
     private Pageable pageable;
 
     @BeforeEach
     void setUp() {
         homeTeam = new Team();
-        homeTeam.setTeamId(1L);
+        homeTeam.setId(1L);
         homeTeam.setTeamName("Flamengo");
 
         awayTeam = new Team();
-        awayTeam.setTeamId(2L);
+        awayTeam.setId(2L);
         awayTeam.setTeamName("Palmeiras");
 
         stadium = new Stadium();
         stadium.setStadiumId(10L);
         stadium.setStadiumName("Maracanã");
 
-        matchDTO = new MatchDTO(
-                homeTeam.getTeamId(),
-                awayTeam.getTeamId(),
+        soccerMatchDTO = new SoccerMatchDTO(
+                homeTeam.getId(),
+                awayTeam.getId(),
                 2,
                 1,
                 stadium.getStadiumId(),
                 LocalDateTime.now()
         );
 
-        match = new Match();
-        match.setMatchId(1L);
-        match.setHomeTeamId(homeTeam);
-        match.setAwayTeamId(awayTeam);
-        match.setGoalsHomeTeam(2);
-        match.setGoalsAwayTeam(1);
-        match.setStadiumId(stadium);
-        match.setMatchDateTime(LocalDateTime.now());
+        soccermatch = new SoccerMatch();
+        soccermatch.setSoccerMatchId(1L);
+        soccermatch.setHomeTeamId(homeTeam);
+        soccermatch.setAwayTeamId(awayTeam);
+        soccermatch.setGoalsHomeTeam(2);
+        soccermatch.setGoalsAwayTeam(1);
+        soccermatch.setStadiumId(stadium);
+        soccermatch.setMatchDateTime(LocalDateTime.now());
 
         pageable = PageRequest.of(0, 10);
     }
@@ -92,65 +90,65 @@ class MatchServiceTest {
     @Test
     @DisplayName("Deve criar uma partida com sucesso")
     void shouldCreateMatchSuccessfully() {
-        when(teamRepository.findById(homeTeam.getTeamId())).thenReturn(Optional.of(homeTeam));
-        when(teamRepository.findById(awayTeam.getTeamId())).thenReturn(Optional.of(awayTeam));
+        when(teamRepository.findById(homeTeam.getId())).thenReturn(Optional.of(homeTeam));
+        when(teamRepository.findById(awayTeam.getId())).thenReturn(Optional.of(awayTeam));
         when(stadiumRepository.findById(stadium.getStadiumId())).thenReturn(Optional.of(stadium));
-        when(matchRepository.save(any(Match.class))).thenReturn(match);
+        when(soccerMatchRepository.save(any(SoccerMatch.class))).thenReturn(soccermatch);
 
-        Match createdMatch = matchService.createMatch(matchDTO);
+        SoccerMatch createdSoccerMatch = soccerMatchService.createMatch(soccerMatchDTO);
 
-        assertNotNull(createdMatch);
-        assertEquals(match.getHomeTeamId().getTeamId(), createdMatch.getHomeTeamId().getTeamId());
-        assertEquals(match.getAwayTeamId().getTeamId(), createdMatch.getAwayTeamId().getTeamId());
-        assertEquals(match.getStadiumId().getStadiumId(), createdMatch.getStadiumId().getStadiumId());
-        verify(matchRepository, times(1)).save(any(Match.class));
+        assertNotNull(createdSoccerMatch);
+        assertEquals(soccermatch.getHomeTeamId().getId(), createdSoccerMatch.getHomeTeamId().getId());
+        assertEquals(soccermatch.getAwayTeamId().getId(), createdSoccerMatch.getAwayTeamId().getId());
+        assertEquals(soccermatch.getStadiumId().getStadiumId(), createdSoccerMatch.getStadiumId().getStadiumId());
+        verify(soccerMatchRepository, times(1)).save(any(SoccerMatch.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao criar partida com time mandante não encontrado")
     void shouldThrowExceptionWhenCreateMatchHomeTeamNotFound() {
-        when(teamRepository.findById(homeTeam.getTeamId())).thenReturn(Optional.empty());
+        when(teamRepository.findById(homeTeam.getId())).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.createMatch(matchDTO));
+                soccerMatchService.createMatch(soccerMatchDTO));
 
         assertEquals("404 NOT_FOUND \"Clube mandante não encontrado\"", exception.getMessage());
-        verify(teamRepository, times(1)).findById(homeTeam.getTeamId());
-        verify(teamRepository, never()).findById(awayTeam.getTeamId());
-        verify(matchRepository, never()).save(any(Match.class));
+        verify(teamRepository, times(1)).findById(homeTeam.getId());
+        verify(teamRepository, never()).findById(awayTeam.getId());
+        verify(soccerMatchRepository, never()).save(any(SoccerMatch.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao criar partida com time visitante não encontrado")
     void shouldThrowExceptionWhenCreateMatchAwayTeamNotFound() {
-        when(teamRepository.findById(homeTeam.getTeamId())).thenReturn(Optional.of(homeTeam));
-        when(teamRepository.findById(awayTeam.getTeamId())).thenReturn(Optional.empty());
+        when(teamRepository.findById(homeTeam.getId())).thenReturn(Optional.of(homeTeam));
+        when(teamRepository.findById(awayTeam.getId())).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.createMatch(matchDTO));
+                soccerMatchService.createMatch(soccerMatchDTO));
 
         assertEquals("404 NOT_FOUND \"Clube visitante não encontrado\"", exception.getMessage());
-        verify(teamRepository, times(1)).findById(homeTeam.getTeamId());
-        verify(teamRepository, times(1)).findById(awayTeam.getTeamId());
+        verify(teamRepository, times(1)).findById(homeTeam.getId());
+        verify(teamRepository, times(1)).findById(awayTeam.getId());
         verify(stadiumRepository, never()).findById(anyLong());
-        verify(matchRepository, never()).save(any(Match.class));
+        verify(soccerMatchRepository, never()).save(any(SoccerMatch.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao criar partida com estádio não encontrado")
     void shouldThrowExceptionWhenCreateMatchStadiumNotFound() {
-        when(teamRepository.findById(homeTeam.getTeamId())).thenReturn(Optional.of(homeTeam));
-        when(teamRepository.findById(awayTeam.getTeamId())).thenReturn(Optional.of(awayTeam));
+        when(teamRepository.findById(homeTeam.getId())).thenReturn(Optional.of(homeTeam));
+        when(teamRepository.findById(awayTeam.getId())).thenReturn(Optional.of(awayTeam));
         when(stadiumRepository.findById(stadium.getStadiumId())).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.createMatch(matchDTO));
+                soccerMatchService.createMatch(soccerMatchDTO));
 
         assertEquals("404 NOT_FOUND \"Estádio não encontrado\"", exception.getMessage());
-        verify(teamRepository, times(1)).findById(homeTeam.getTeamId());
-        verify(teamRepository, times(1)).findById(awayTeam.getTeamId());
+        verify(teamRepository, times(1)).findById(homeTeam.getId());
+        verify(teamRepository, times(1)).findById(awayTeam.getId());
         verify(stadiumRepository, times(1)).findById(stadium.getStadiumId());
-        verify(matchRepository, never()).save(any(Match.class));
+        verify(soccerMatchRepository, never()).save(any(SoccerMatch.class));
     }
 
 /*    @Test
@@ -173,7 +171,7 @@ class MatchServiceTest {
     @Test
     @DisplayName("Deve atualizar uma partida com sucesso")
     void shouldUpdateMatchSuccessfully() {
-        MatchDTO updateDTO = new MatchDTO(
+        SoccerMatchDTO updateDTO = new SoccerMatchDTO(
                 3L, // New home team ID
                 null,
                 3,
@@ -182,204 +180,204 @@ class MatchServiceTest {
                 null
         );
         Team newHomeTeam = new Team();
-        newHomeTeam.setTeamId(3L);
+        newHomeTeam.setId(3L);
         newHomeTeam.setTeamName("Cruzeiro");
 
-        when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
+        when(soccerMatchRepository.findById(1L)).thenReturn(Optional.of(soccermatch));
         when(teamRepository.findById(3L)).thenReturn(Optional.of(newHomeTeam));
-        when(matchRepository.save(any(Match.class))).thenReturn(match);
+        when(soccerMatchRepository.save(any(SoccerMatch.class))).thenReturn(soccermatch);
 
-        Match updatedMatch = matchService.updateMatch(1L, updateDTO);
+        SoccerMatch updatedSoccerMatch = soccerMatchService.updateMatch(1L, updateDTO);
 
-        assertNotNull(updatedMatch);
-        assertEquals(3L, updatedMatch.getHomeTeamId().getTeamId());
-        assertEquals(3, updatedMatch.getGoalsHomeTeam());
-        verify(matchRepository, times(1)).findById(1L);
+        assertNotNull(updatedSoccerMatch);
+        assertEquals(3L, updatedSoccerMatch.getHomeTeamId().getId());
+        assertEquals(3, updatedSoccerMatch.getGoalsHomeTeam());
+        verify(soccerMatchRepository, times(1)).findById(1L);
         verify(teamRepository, times(1)).findById(3L);
-        verify(matchRepository, times(1)).save(any(Match.class));
+        verify(soccerMatchRepository, times(1)).save(any(SoccerMatch.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar atualizar partida com novo time mandante igual ao visitante")
     void shouldThrowExceptionWhenUpdateMatchHomeTeamEqualsAwayTeam() {
-        MatchDTO updateDTO = new MatchDTO(
+        SoccerMatchDTO updateDTO = new SoccerMatchDTO(
                 2L, // Try to set home team to away team's ID
                 null, null, null, null, null
         );
 
-        when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
+        when(soccerMatchRepository.findById(1L)).thenReturn(Optional.of(soccermatch));
         when(teamRepository.findById(2L)).thenReturn(Optional.of(awayTeam)); // Mock the new home team (which is the away team)
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.updateMatch(1L, updateDTO));
+                soccerMatchService.updateMatch(1L, updateDTO));
 
         assertEquals("400 BAD_REQUEST \"O novo team mandante não pode ser igual ao team visitante atual.\"", exception.getMessage());
-        verify(matchRepository, times(1)).findById(1L);
+        verify(soccerMatchRepository, times(1)).findById(1L);
         verify(teamRepository, times(1)).findById(2L);
-        verify(matchRepository, never()).save(any(Match.class));
+        verify(soccerMatchRepository, never()).save(any(SoccerMatch.class));
     }
 
     @Test
     @DisplayName("Deve remover uma partida com sucesso")
     void shouldRemoveMatchSuccessfully() {
-        when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
-        doNothing().when(matchRepository).delete(match);
+        when(soccerMatchRepository.findById(1L)).thenReturn(Optional.of(soccermatch));
+        doNothing().when(soccerMatchRepository).delete(soccermatch);
 
-        matchService.removeMatch(1L);
+        soccerMatchService.removeMatch(1L);
 
-        verify(matchRepository, times(1)).findById(1L);
-        verify(matchRepository, times(1)).delete(match);
+        verify(soccerMatchRepository, times(1)).findById(1L);
+        verify(soccerMatchRepository, times(1)).delete(soccermatch);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar remover partida não encontrada")
     void shouldThrowExceptionWhenRemoveMatchNotFound() {
-        when(matchRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(soccerMatchRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.removeMatch(99L));
+                soccerMatchService.removeMatch(99L));
 
         assertEquals("404 NOT_FOUND \"Partida não encontrada\"", exception.getMessage());
-        verify(matchRepository, times(1)).findById(99L);
-        verify(matchRepository, never()).delete(any(Match.class));
+        verify(soccerMatchRepository, times(1)).findById(99L);
+        verify(soccerMatchRepository, never()).delete(any(SoccerMatch.class));
     }
 
     @Test
     @DisplayName("Deve encontrar uma partida por ID com sucesso")
     void shouldFindMatchByIdSuccessfully() {
-        when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
+        when(soccerMatchRepository.findById(1L)).thenReturn(Optional.of(soccermatch));
 
-        Match foundMatch = matchService.findMatchById(1L);
+        SoccerMatch foundSoccerMatch = soccerMatchService.findMatchById(1L);
 
-        assertNotNull(foundMatch);
-        assertEquals(match.getMatchId(), foundMatch.getMatchId());
-        verify(matchRepository, times(1)).findById(1L);
+        assertNotNull(foundSoccerMatch);
+        assertEquals(soccermatch.getSoccerMatchId(), foundSoccerMatch.getSoccerMatchId());
+        verify(soccerMatchRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao não encontrar partida por ID")
     void shouldThrowExceptionWhenFindMatchByIdNotFound() {
-        when(matchRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(soccerMatchRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.findMatchById(99L));
+                soccerMatchService.findMatchById(99L));
 
         assertEquals("404 NOT_FOUND \"Partida não encontrada\"", exception.getMessage());
-        verify(matchRepository, times(1)).findById(99L);
+        verify(soccerMatchRepository, times(1)).findById(99L);
     }
 
     @Test
     @DisplayName("Deve listar partidas sem filtros")
     void shouldListAllMatchesWhenNoFilters() {
-        Page<Match> matchPage = new PageImpl<>(Collections.singletonList(match));
-        when(matchRepository.findAll(pageable)).thenReturn(matchPage);
+        Page<SoccerMatch> matchPage = new PageImpl<>(Collections.singletonList(soccermatch));
+        when(soccerMatchRepository.findAll(pageable)).thenReturn(matchPage);
 
-        Page<Match> result = matchService.listMatch(null, null, pageable);
+        Page<SoccerMatch> result = soccerMatchService.listMatch(null, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findAll(pageable);
+        verify(soccerMatchRepository, times(1)).findAll(pageable);
     }
 
     @Test
     @DisplayName("Deve listar partidas filtrando por ID do time")
     void shouldListMatchesFilteredByTeamId() {
-        Page<Match> matchPage = new PageImpl<>(Collections.singletonList(match));
-        when(matchRepository.findByHomeTeamIdOrAwayTeamId(homeTeam.getTeamId(), homeTeam.getTeamId(), pageable)).thenReturn(matchPage);
+        Page<SoccerMatch> matchPage = new PageImpl<>(Collections.singletonList(soccermatch));
+        when(soccerMatchRepository.findByHomeTeamIdOrAwayTeamId(homeTeam.getId(), homeTeam.getId(), pageable)).thenReturn(matchPage);
 
-        Page<Match> result = matchService.listMatch(homeTeam.getTeamId(), null, pageable);
+        Page<SoccerMatch> result = soccerMatchService.listMatch(homeTeam.getId(), null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findByHomeTeamIdOrAwayTeamId(homeTeam.getTeamId(), homeTeam.getTeamId(), pageable);
+        verify(soccerMatchRepository, times(1)).findByHomeTeamIdOrAwayTeamId(homeTeam.getId(), homeTeam.getId(), pageable);
     }
 
     @Test
     @DisplayName("Deve listar partidas filtrando por ID do estádio")
     void shouldListMatchesFilteredByStadiumId() {
-        Page<Match> matchPage = new PageImpl<>(Collections.singletonList(match));
-        when(matchRepository.findByStadiumId(stadium.getStadiumId(), pageable)).thenReturn(matchPage);
+        Page<SoccerMatch> matchPage = new PageImpl<>(Collections.singletonList(soccermatch));
+        when(soccerMatchRepository.findByStadiumId(stadium.getStadiumId(), pageable)).thenReturn(matchPage);
 
-        Page<Match> result = matchService.listMatch(null, stadium.getStadiumId(), pageable);
+        Page<SoccerMatch> result = soccerMatchService.listMatch(null, stadium.getStadiumId(), pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findByStadiumId(stadium.getStadiumId(), pageable);
+        verify(soccerMatchRepository, times(1)).findByStadiumId(stadium.getStadiumId(), pageable);
     }
 
     @Test
     @DisplayName("Deve listar partidas filtrando por ID do time e ID do estádio")
     void shouldListMatchesFilteredByTeamAndStadiumId() {
-        Page<Match> matchPage = new PageImpl<>(Collections.singletonList(match));
-        when(matchRepository.findByHomeTeamIdOrAwayTeamIdAndStadiumId(homeTeam.getTeamId(), stadium.getStadiumId(), pageable)).thenReturn(matchPage);
+        Page<SoccerMatch> matchPage = new PageImpl<>(Collections.singletonList(soccermatch));
+        when(soccerMatchRepository.findByHomeTeamIdOrAwayTeamIdAndStadiumId(homeTeam.getId(), stadium.getStadiumId(), pageable)).thenReturn(matchPage);
 
-        Page<Match> result = matchService.listMatch(homeTeam.getTeamId(), stadium.getStadiumId(), pageable);
+        Page<SoccerMatch> result = soccerMatchService.listMatch(homeTeam.getId(), stadium.getStadiumId(), pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findByHomeTeamIdOrAwayTeamIdAndStadiumId(homeTeam.getTeamId(), stadium.getStadiumId(), pageable);
+        verify(soccerMatchRepository, times(1)).findByHomeTeamIdOrAwayTeamIdAndStadiumId(homeTeam.getId(), stadium.getStadiumId(), pageable);
     }
 
     @Test
     @DisplayName("Deve listar goleadas para um time com sucesso")
     void shouldListLandslidesForTeamSuccessfully() {
-        Page<Match> landslidePage = new PageImpl<>(Collections.singletonList(match)); // Assume match is a landslide
-        when(matchRepository.findLandslideByTeam(homeTeam.getTeamId(), pageable)).thenReturn(landslidePage);
+        Page<SoccerMatch> landslidePage = new PageImpl<>(Collections.singletonList(soccermatch)); // Assume match is a landslide
+        when(soccerMatchRepository.findLandslideByTeam(homeTeam.getId(), pageable)).thenReturn(landslidePage);
 
-        Page<Match> result = matchService.listLandslides(homeTeam.getTeamId(), pageable);
+        Page<SoccerMatch> result = soccerMatchService.listLandslides(homeTeam.getId(), pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findLandslideByTeam(homeTeam.getTeamId(), pageable);
+        verify(soccerMatchRepository, times(1)).findLandslideByTeam(homeTeam.getId(), pageable);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao listar goleadas sem ID do time")
     void shouldThrowExceptionWhenListLandslidesWithoutTeamId() {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.listLandslides(null, pageable));
+                soccerMatchService.listLandslides(null, pageable));
 
         assertEquals("400 BAD_REQUEST \"ID do team é obrigatório para filtrar goleadas\"", exception.getMessage());
-        verify(matchRepository, never()).findLandslideByTeam(anyLong(), any(Pageable.class));
+        verify(soccerMatchRepository, never()).findLandslideByTeam(anyLong(), any(Pageable.class));
     }
 
     @Test
     @DisplayName("Deve listar confrontos entre dois times com sucesso")
     void shouldListClashesSuccessfully() {
-        Page<Match> clashPage = new PageImpl<>(Collections.singletonList(match));
-        when(matchRepository.findClashes(homeTeam.getTeamId(), awayTeam.getTeamId(), pageable)).thenReturn(clashPage);
+        Page<SoccerMatch> clashPage = new PageImpl<>(Collections.singletonList(soccermatch));
+        when(soccerMatchRepository.findClashes(homeTeam.getId(), awayTeam.getId(), pageable)).thenReturn(clashPage);
 
-        Page<Match> result = matchService.listClashes(homeTeam.getTeamId(), awayTeam.getTeamId(), false, pageable);
+        Page<SoccerMatch> result = soccerMatchService.listClashes(homeTeam.getId(), awayTeam.getId(), false, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findClashes(homeTeam.getTeamId(), awayTeam.getTeamId(), pageable);
-        verify(matchRepository, never()).findLandslideClashes(anyLong(), anyLong(), any(Pageable.class));
+        verify(soccerMatchRepository, times(1)).findClashes(homeTeam.getId(), awayTeam.getId(), pageable);
+        verify(soccerMatchRepository, never()).findLandslideClashes(anyLong(), anyLong(), any(Pageable.class));
     }
 
     @Test
     @DisplayName("Deve listar goleadas entre dois times com sucesso")
     void shouldListLandslideClashesSuccessfully() {
-        Page<Match> landslideClashPage = new PageImpl<>(Collections.singletonList(match));
-        when(matchRepository.findLandslideClashes(homeTeam.getTeamId(), awayTeam.getTeamId(), pageable)).thenReturn(landslideClashPage);
+        Page<SoccerMatch> landslideClashPage = new PageImpl<>(Collections.singletonList(soccermatch));
+        when(soccerMatchRepository.findLandslideClashes(homeTeam.getId(), awayTeam.getId(), pageable)).thenReturn(landslideClashPage);
 
-        Page<Match> result = matchService.listClashes(homeTeam.getTeamId(), awayTeam.getTeamId(), true, pageable);
+        Page<SoccerMatch> result = soccerMatchService.listClashes(homeTeam.getId(), awayTeam.getId(), true, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        verify(matchRepository, times(1)).findLandslideClashes(homeTeam.getTeamId(), awayTeam.getTeamId(), pageable);
-        verify(matchRepository, never()).findClashes(anyLong(), anyLong(), any(Pageable.class));
+        verify(soccerMatchRepository, times(1)).findLandslideClashes(homeTeam.getId(), awayTeam.getId(), pageable);
+        verify(soccerMatchRepository, never()).findClashes(anyLong(), anyLong(), any(Pageable.class));
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao listar confrontos com times iguais")
     void shouldThrowExceptionWhenListClashesWithSameTeams() {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.listClashes(homeTeam.getTeamId(), homeTeam.getTeamId(), false, pageable));
+                soccerMatchService.listClashes(homeTeam.getId(), homeTeam.getId(), false, pageable));
 
         assertEquals("400 BAD_REQUEST \"Os IDs dos clubes não podem ser os mesmos para um confronto.\"", exception.getMessage());
-        verify(matchRepository, never()).findClashes(anyLong(), anyLong(), any(Pageable.class));
-        verify(matchRepository, never()).findLandslideClashes(anyLong(), anyLong(), any(Pageable.class));
+        verify(soccerMatchRepository, never()).findClashes(anyLong(), anyLong(), any(Pageable.class));
+        verify(soccerMatchRepository, never()).findLandslideClashes(anyLong(), anyLong(), any(Pageable.class));
     }
 
     @Test
@@ -388,11 +386,11 @@ class MatchServiceTest {
         Object[] stats = {5, 2, 1, 2, 8, 7, 1}; // totalJogos, vitoriasTeam1, empates, vitoriasTeam2, goalsTeam1, goalsTeam2, goalsBalance
         List<Object[]> results = Collections.singletonList(stats);
 
-        when(teamRepository.findById(homeTeam.getTeamId())).thenReturn(Optional.of(homeTeam));
-        when(teamRepository.findById(awayTeam.getTeamId())).thenReturn(Optional.of(awayTeam));
-        when(matchRepository.calculateClashesRetrospect(homeTeam.getTeamId(), awayTeam.getTeamId())).thenReturn(results);
+        when(teamRepository.findById(homeTeam.getId())).thenReturn(Optional.of(homeTeam));
+        when(teamRepository.findById(awayTeam.getId())).thenReturn(Optional.of(awayTeam));
+        when(soccerMatchRepository.calculateClashesRetrospect(homeTeam.getId(), awayTeam.getId())).thenReturn(results);
 
-        RetrospectVersusDTO retrospect = matchService.getRetrospectPlays(homeTeam.getTeamId(), awayTeam.getTeamId());
+        RetrospectVersusDTO retrospect = soccerMatchService.getRetrospectPlays(homeTeam.getId(), awayTeam.getId());
 
         assertNotNull(retrospect);
         assertEquals(homeTeam, retrospect.homeTeam());
@@ -405,19 +403,19 @@ class MatchServiceTest {
         assertEquals(7, retrospect.goalsAwayTeam());
         assertEquals(1, retrospect.goalsBalance());
 
-        verify(teamRepository, times(1)).findById(homeTeam.getTeamId());
-        verify(teamRepository, times(1)).findById(awayTeam.getTeamId());
-        verify(matchRepository, times(1)).calculateClashesRetrospect(homeTeam.getTeamId(), awayTeam.getTeamId());
+        verify(teamRepository, times(1)).findById(homeTeam.getId());
+        verify(teamRepository, times(1)).findById(awayTeam.getId());
+        verify(soccerMatchRepository, times(1)).calculateClashesRetrospect(homeTeam.getId(), awayTeam.getId());
     }
 
     @Test
     @DisplayName("Deve retornar retrospecto de confronto com zero quando não houver partidas")
     void shouldReturnZeroClashesRetrospectWhenNoMatches() {
-        when(teamRepository.findById(homeTeam.getTeamId())).thenReturn(Optional.of(homeTeam));
-        when(teamRepository.findById(awayTeam.getTeamId())).thenReturn(Optional.of(awayTeam));
-        when(matchRepository.calculateClashesRetrospect(homeTeam.getTeamId(), awayTeam.getTeamId())).thenReturn(Collections.emptyList());
+        when(teamRepository.findById(homeTeam.getId())).thenReturn(Optional.of(homeTeam));
+        when(teamRepository.findById(awayTeam.getId())).thenReturn(Optional.of(awayTeam));
+        when(soccerMatchRepository.calculateClashesRetrospect(homeTeam.getId(), awayTeam.getId())).thenReturn(Collections.emptyList());
 
-        RetrospectVersusDTO retrospect = matchService.getRetrospectPlays(homeTeam.getTeamId(), awayTeam.getTeamId());
+        RetrospectVersusDTO retrospect = soccerMatchService.getRetrospectPlays(homeTeam.getId(), awayTeam.getId());
 
         assertNotNull(retrospect);
         assertEquals(homeTeam, retrospect.homeTeam());
@@ -430,9 +428,9 @@ class MatchServiceTest {
         assertEquals(0, retrospect.goalsAwayTeam());
         assertEquals(0, retrospect.goalsBalance());
 
-        verify(teamRepository, times(1)).findById(homeTeam.getTeamId());
-        verify(teamRepository, times(1)).findById(awayTeam.getTeamId());
-        verify(matchRepository, times(1)).calculateClashesRetrospect(homeTeam.getTeamId(), awayTeam.getTeamId());
+        verify(teamRepository, times(1)).findById(homeTeam.getId());
+        verify(teamRepository, times(1)).findById(awayTeam.getId());
+        verify(soccerMatchRepository, times(1)).calculateClashesRetrospect(homeTeam.getId(), awayTeam.getId());
     }
 
 
@@ -440,83 +438,83 @@ class MatchServiceTest {
     @DisplayName("Deve lançar exceção ao obter retrospecto de confronto com times iguais")
     void shouldThrowExceptionWhenGetClashesRetrospectWithSameTeams() {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.getRetrospectPlays(homeTeam.getTeamId(), homeTeam.getTeamId()));
+                soccerMatchService.getRetrospectPlays(homeTeam.getId(), homeTeam.getId()));
 
         assertEquals("400 BAD_REQUEST \"Os IDs dos clubes não podem ser os mesmos para obter o retrospecto de confronto.\"", exception.getMessage());
         verify(teamRepository, never()).findById(anyLong());
-        verify(matchRepository, never()).calculateClashesRetrospect(anyLong(), anyLong());
+        verify(soccerMatchRepository, never()).calculateClashesRetrospect(anyLong(), anyLong());
     }
 
     @Test
     @DisplayName("Deve retornar ranking por número de jogos")
     void shouldReturnRankingByPlays() {
         RankingDTO rankingDTO = new RankingDTO(homeTeam, 10L);
-        when(matchRepository.rankingByPlays()).thenReturn(Collections.singletonList(rankingDTO));
+        when(soccerMatchRepository.rankingByPlays()).thenReturn(Collections.singletonList(rankingDTO));
 
-        List<RankingDTO> ranking = matchService.getRanking("jogos");
+        List<RankingDTO> ranking = soccerMatchService.getRanking("jogos");
 
         assertNotNull(ranking);
         assertFalse(ranking.isEmpty());
         assertEquals(1, ranking.size());
         assertEquals(rankingDTO, ranking.get(0));
-        verify(matchRepository, times(1)).rankingByPlays();
+        verify(soccerMatchRepository, times(1)).rankingByPlays();
     }
 
     @Test
     @DisplayName("Deve retornar ranking por vitórias")
     void shouldReturnRankingByVictories() {
         RankingDTO rankingDTO = new RankingDTO(homeTeam, 5L);
-        when(matchRepository.rankingByVictories()).thenReturn(Collections.singletonList(rankingDTO));
+        when(soccerMatchRepository.rankingByVictories()).thenReturn(Collections.singletonList(rankingDTO));
 
-        List<RankingDTO> ranking = matchService.getRanking("victories");
+        List<RankingDTO> ranking = soccerMatchService.getRanking("victories");
 
         assertNotNull(ranking);
         assertFalse(ranking.isEmpty());
         assertEquals(1, ranking.size());
         assertEquals(rankingDTO, ranking.get(0));
-        verify(matchRepository, times(1)).rankingByVictories();
+        verify(soccerMatchRepository, times(1)).rankingByVictories();
     }
 
     @Test
     @DisplayName("Deve retornar ranking por gols")
     void shouldReturnRankingByGoals() {
         RankingDTO rankingDTO = new RankingDTO(homeTeam, 20L);
-        when(matchRepository.rankingByGoals()).thenReturn(Collections.singletonList(rankingDTO));
+        when(soccerMatchRepository.rankingByGoals()).thenReturn(Collections.singletonList(rankingDTO));
 
-        List<RankingDTO> ranking = matchService.getRanking("gols");
+        List<RankingDTO> ranking = soccerMatchService.getRanking("gols");
 
         assertNotNull(ranking);
         assertFalse(ranking.isEmpty());
         assertEquals(1, ranking.size());
         assertEquals(rankingDTO, ranking.get(0));
-        verify(matchRepository, times(1)).rankingByGoals();
+        verify(soccerMatchRepository, times(1)).rankingByGoals();
     }
 
     @Test
     @DisplayName("Deve retornar ranking por pontos")
     void shouldReturnRankingByPoints() {
         RankingDTO rankingDTO = new RankingDTO(homeTeam, 16L); // 5 victories * 3 + 1 tie * 1 = 16
-        when(matchRepository.rankingByPoints()).thenReturn(Collections.singletonList(rankingDTO));
+        when(soccerMatchRepository.rankingByPoints()).thenReturn(Collections.singletonList(rankingDTO));
 
-        List<RankingDTO> ranking = matchService.getRanking("pontos");
+        List<RankingDTO> ranking = soccerMatchService.getRanking("pontos");
 
         assertNotNull(ranking);
         assertFalse(ranking.isEmpty());
         assertEquals(1, ranking.size());
         assertEquals(rankingDTO, ranking.get(0));
-        verify(matchRepository, times(1)).rankingByPoints();
+        verify(soccerMatchRepository, times(1)).rankingByPoints();
     }
 
     @Test
     @DisplayName("Deve lançar exceção para critério de ranking inválido")
     void shouldThrowExceptionForInvalidRankingCriteria() {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-                matchService.getRanking("invalido"));
+                soccerMatchService.getRanking("invalido"));
 
         assertEquals("400 BAD_REQUEST \"Critério de ranking inválido\"", exception.getMessage());
-        verify(matchRepository, never()).rankingByPlays();
-        verify(matchRepository, never()).rankingByVictories();
-        verify(matchRepository, never()).rankingByGoals();
-        verify(matchRepository, never()).rankingByPoints();
+        verify(soccerMatchRepository, never()).rankingByPlays();
+        verify(soccerMatchRepository, never()).rankingByVictories();
+        verify(soccerMatchRepository, never()).rankingByGoals();
+        verify(soccerMatchRepository, never()).rankingByPoints();
     }
 }

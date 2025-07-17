@@ -16,9 +16,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MatchService {
+public class SoccerMatchService {
 
-    private final MatchRepository matchRepository;
+    private final SoccerMatchRepository soccerMatchRepository;
     private final TeamRepository teamRepository;
     private final StadiumRepository stadiumRepository;
 
@@ -32,91 +32,91 @@ public class MatchService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage));
     }
 
-    public Match createMatch(MatchDTO dto) {
-        Match match = new Match();
+    public SoccerMatch createMatch(SoccerMatchDTO dto) {
+        SoccerMatch soccermatch = new SoccerMatch();
 
         Team homeTeam = findTeamById(dto.homeTeamId(), "Clube mandante não encontrado");
         Team awayTeam = findTeamById(dto.awayTeamId(), "Clube visitante não encontrado");
         Stadium stadium = findStadiumById(dto.stadiumId(), "Estádio não encontrado");
-        if (homeTeam.getTeamId().equals(awayTeam.getTeamId())) {
+        if (homeTeam.getId().equals(awayTeam.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O team mandante e o team visitante não podem ser o mesmo.");
         }
 
-        match.setHomeTeamId(homeTeam);
-        match.setAwayTeamId(awayTeam);
-        match.setGoalsHomeTeam(dto.goalsHomeTeam());
-        match.setGoalsAwayTeam(dto.goalsAwayTeam());
-        match.setStadiumId(stadium);
-        match.setMatchDateTime(dto.matchDateTime() != null ? dto.matchDateTime() : LocalDateTime.now());
+        soccermatch.setHomeTeamId(homeTeam);
+        soccermatch.setAwayTeamId(awayTeam);
+        soccermatch.setGoalsHomeTeam(dto.goalsHomeTeam());
+        soccermatch.setGoalsAwayTeam(dto.goalsAwayTeam());
+        soccermatch.setStadiumId(stadium);
+        soccermatch.setMatchDateTime(dto.matchDateTime() != null ? dto.matchDateTime() : LocalDateTime.now());
 
-        return matchRepository.save(match);
+        return soccerMatchRepository.save(soccermatch);
     }
 
-    public Match updateMatch(Long id, MatchDTO dto) {
-        Match match = findMatchById(id);
+    public SoccerMatch updateMatch(Long id, SoccerMatchDTO dto) {
+        SoccerMatch soccermatch = findMatchById(id);
 
         if (dto.homeTeamId() != null) {
             Team newHomeTeam = findTeamById(dto.homeTeamId(), "Clube mandante não encontrado");
-            if (newHomeTeam.getTeamId().equals(match.getAwayTeamId().getTeamId())) {
+            if (newHomeTeam.getId().equals(soccermatch.getAwayTeamId().getId())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O novo team mandante não pode ser igual ao team visitante atual.");
             }
-            match.setHomeTeamId(newHomeTeam);
+            soccermatch.setHomeTeamId(newHomeTeam);
         }
         if (dto.awayTeamId() != null) {
             Team newAwayTeam = findTeamById(dto.awayTeamId(), "Clube visitante não encontrado");
-            if (newAwayTeam.getTeamId().equals(match.getHomeTeamId().getTeamId())) {
+            if (newAwayTeam.getId().equals(soccermatch.getHomeTeamId().getId())) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O novo team visitante não pode ser igual ao team mandante atual.");
             }
-            match.setAwayTeamId(newAwayTeam);
+            soccermatch.setAwayTeamId(newAwayTeam);
         }
         if (dto.stadiumId() != null) {
             Stadium stadium = findStadiumById(dto.stadiumId(), "Estádio não encontrado");
-            match.setStadiumId(stadium);
+            soccermatch.setStadiumId(stadium);
         }
-        if (dto.goalsHomeTeam() != null) match.setGoalsHomeTeam(dto.goalsHomeTeam());
-        if (dto.goalsAwayTeam() != null) match.setGoalsAwayTeam(dto.goalsAwayTeam());
-        if (dto.matchDateTime() != null) match.setMatchDateTime(dto.matchDateTime());
+        if (dto.goalsHomeTeam() != null) soccermatch.setGoalsHomeTeam(dto.goalsHomeTeam());
+        if (dto.goalsAwayTeam() != null) soccermatch.setGoalsAwayTeam(dto.goalsAwayTeam());
+        if (dto.matchDateTime() != null) soccermatch.setMatchDateTime(dto.matchDateTime());
 
-        return matchRepository.save(match);
+        return soccerMatchRepository.save(soccermatch);
     }
 
     public void removeMatch(Long id) {
-        Match match = findMatchById(id);
-        matchRepository.delete(match);
+        SoccerMatch soccermatch = findMatchById(id);
+        soccerMatchRepository.delete(soccermatch);
     }
 
-    public Match findMatchById(Long id) {
-        return matchRepository.findById(id)
+    public SoccerMatch findMatchById(Long id) {
+        return soccerMatchRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Partida não encontrada"));
     }
 
-    public Page<Match> listMatch(Long teamId, Long stadiumId, Pageable pageable) {
+    public Page<SoccerMatch> listMatch(Long teamId, Long stadiumId, Pageable pageable) {
         if (teamId != null && stadiumId != null) {
-            return matchRepository.findByHomeTeamIdOrAwayTeamIdAndStadiumId(teamId, stadiumId, pageable);
+            return soccerMatchRepository.findByHomeTeamIdOrAwayTeamIdAndStadiumId(teamId, stadiumId, pageable);
         } else if (teamId != null) {
-            return matchRepository.findByHomeTeamIdOrAwayTeamId(teamId, teamId, pageable);
+            return soccerMatchRepository.findByHomeTeamIdOrAwayTeamId(teamId, teamId, pageable);
         } else if (stadiumId != null) {
-            return matchRepository.findByStadiumId(stadiumId, pageable);
+            return soccerMatchRepository.findByStadiumId(stadiumId, pageable);
         }
-        return matchRepository.findAll(pageable);
+        return soccerMatchRepository.findAll(pageable);
     }
 
-    public Page<Match> listLandslides(Long teamId, Pageable pageable) {
+    public Page<SoccerMatch> listLandslides(Long teamId, Pageable pageable) {
         if (teamId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID do team é obrigatório para filtrar goleadas");
         }
-        return matchRepository.findLandslideByTeam(teamId, pageable);
+        return soccerMatchRepository.findLandslideByTeam(teamId, pageable);
     }
 
-    public Page<Match> listClashes(Long team1Id, Long team2Id, Boolean landslides, Pageable pageable) {
+    public Page<SoccerMatch> listClashes(Long team1Id, Long team2Id, Boolean landslides, Pageable pageable) {
         if (team1Id.equals(team2Id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Os IDs dos clubes não podem ser os mesmos para um confronto.");
         }
 
         if (landslides != null && landslides) {
-            return matchRepository.findLandslideClashes(team1Id, team2Id, pageable);
+            return soccerMatchRepository.findLandslideClashes(team1Id, team2Id, pageable);
         }
-        return matchRepository.findClashes(team1Id, team2Id, pageable);
+        return soccerMatchRepository.findClashes(team1Id, team2Id, pageable);
     }
 
     public RetrospectVersusDTO getRetrospectPlays(Long team1Id, Long team2Id) {
@@ -127,7 +127,7 @@ public class MatchService {
         Team team1 = findTeamById(team1Id, "Clube 1 não encontrado");
         Team team2 = findTeamById(team2Id, "Clube 2 não encontrado");
 
-        List<Object[]> results = matchRepository.calculateClashesRetrospect(team1Id, team2Id);
+        List<Object[]> results = soccerMatchRepository.calculateClashesRetrospect(team1Id, team2Id);
 
         if (results.isEmpty()) {
             return new RetrospectVersusDTO(team1, team2, 0, 0, 0, 0, 0, 0, 0);
@@ -150,15 +150,15 @@ public class MatchService {
     public List<RankingDTO> getRanking(String criteria) {
         switch (criteria) {
             case "jogos":
-                return matchRepository.rankingByPlays();
+                return soccerMatchRepository.rankingByPlays();
             case "victories":
-                return matchRepository.rankingByVictories();
+                return soccerMatchRepository.rankingByVictories();
             case "gols":
-                return matchRepository.rankingByGoals();
+                return soccerMatchRepository.rankingByGoals();
             case "pontos":
-                return matchRepository.rankingByPoints();
+                return soccerMatchRepository.rankingByPoints();
             default:
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Critério de ranking inválido");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Criterio de classificação inválido");
         }
     }
 }

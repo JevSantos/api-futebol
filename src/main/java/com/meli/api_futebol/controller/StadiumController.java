@@ -38,8 +38,14 @@ public class StadiumController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault(sort = "teamName") Pageable pageable) {
+    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault Pageable pageable) {
         Page<Stadium> estadios = stadiumService.listStadium(pageable);
         return ResponseEntity.ok(estadios);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStadium(@PathVariable Long id) {
+        stadiumService.deleteStadium(id);
+        return ResponseEntity.noContent().build();
     }
 }
