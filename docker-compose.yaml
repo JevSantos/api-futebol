@@ -1,5 +1,4 @@
 # version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0
@@ -13,7 +12,7 @@ services:
       - "3306:3306"
     volumes:
       - api-futebol:/var/lib/mysql
-      -  ./src/main/resources/db/data.sql:/docker-entrypoint-initdb.d/data.sql
+#      -  ./src/main/resources/db/data.sql:/docker-entrypoint-initdb.d/data.sql
     healthcheck: # Verifica do container
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 20s

@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/estadios")
+@RequestMapping("/estadios")
 @RequiredArgsConstructor
 public class StadiumController {
 
@@ -38,8 +38,14 @@ public class StadiumController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault(sort = "teamName") Pageable pageable) {
+    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault Pageable pageable) {
         Page<Stadium> estadios = stadiumService.listStadium(pageable);
         return ResponseEntity.ok(estadios);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStadium(@PathVariable Long id) {
+        stadiumService.deleteStadium(id);
+        return ResponseEntity.noContent().build();
     }
 }
