@@ -1,6 +1,7 @@
 package com.meli.api_futebol.service;
 
 import com.meli.api_futebol.dto.StadiumDTO;
+import com.meli.api_futebol.dto.ViaCepResponseDTO;
 import com.meli.api_futebol.model.Stadium;
 import com.meli.api_futebol.repository.StadiumRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,24 +10,35 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class StadiumService {
     private final StadiumRepository stadiumRepository;
+    private final RestTemplate restTemplate;
 
     public Stadium createStadium(StadiumDTO dto) {
         Stadium stadium = new Stadium();
         stadium.setStadiumName(dto.stadiumName());
-        stadium.setStadiumCity(dto.stadiumCity());
         stadium.setStadiumOwner(dto.stadiumOwner());
+
+        if (dto.cep() != null && !dto.cep().isEmpty()) {
+            ViaCepResponseDTO viaCepData = fetchAddressFromViaCep(dto.cep());
+            if (viaCepData != null) {
+                stadium.setCep(viaCepData.getCep());
+                stadium.setAddress(viaCepData.getLogradouro());
+                //stadium.setNeighborhood(viaCepData.getBairro());
+                stadium.setStadiumState(viaCepData.getUf());
+                stadium.setStadiumCity(viaCepData.getLocalidade());
+            }
+        }
         return stadiumRepository.save(stadium);
     }
     public Stadium updateStadium(Long id, StadiumDTO dto) {
         Stadium stadium = findStadiumById(id);
         stadium.setStadiumName(dto.stadiumName());
-        stadium.setStadiumCity(dto.stadiumCity());
         stadium.setStadiumOwner(dto.stadiumOwner());
         return stadiumRepository.save(stadium);
     }
@@ -44,4 +56,13 @@ public class StadiumService {
         stadiumRepository.delete(stadium);
     }
 
+    private ViaCepResponseDTO fetchAddressFromViaCep(String cep) {
+        try {
+            String url = "https://viacep.com.br/ws/" + cep + "/json/";
+            return restTemplate.getForObject(url, ViaCepResponseDTO.class);
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar CEP na ViaCEP: " + e.getMessage());
+            return null;
+        }
+    }
 }
