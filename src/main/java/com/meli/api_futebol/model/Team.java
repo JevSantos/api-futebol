@@ -1,7 +1,7 @@
 package com.meli.api_futebol.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -11,15 +11,15 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long teamId;
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "team_name",nullable = false)
     private String teamName;
 
-    @Column(nullable = false, length = 2)
+    @Column(name = "team_state", nullable = false, length = 2)
     private String teamState;
 
-    @Column(nullable = false)
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate;
 
     @Column(name = "active",nullable = false)

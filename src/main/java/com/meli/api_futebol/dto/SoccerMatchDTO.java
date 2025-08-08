@@ -3,7 +3,7 @@ package com.meli.api_futebol.dto;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public record MatchDTO(
+public record SoccerMatchDTO(
         @NotNull(message = "ID do team mandante é obrigatório")
         Long homeTeamId,
         @NotNull(message = "ID do team visitante é obrigatório")

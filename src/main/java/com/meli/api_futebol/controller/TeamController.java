@@ -1,8 +1,8 @@
 package com.meli.api_futebol.controller;
 
+import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.dto.TeamDTO;
 import com.meli.api_futebol.dto.TeamRetrospectDTO;
-import com.meli.api_futebol.dto.RetrospectVersusDTO;
 import com.meli.api_futebol.model.Team;
 import com.meli.api_futebol.service.TeamService;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/clubes")
+@RequestMapping("/clubes")
 @RequiredArgsConstructor
 public class TeamController {
 
@@ -41,10 +41,16 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/{id}/activate")
+    public ResponseEntity<Void> Activate(@PathVariable Long id) {
+        teamService.teamActivate(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Team> findTeamById(@PathVariable Long id) {
-        Team clube = teamService.findTeamById(id);
-        return ResponseEntity.ok(clube);
+        Team team = teamService.findTeamById(id);
+        return ResponseEntity.ok(team);
     }
 
     @GetMapping("/teams-list")
@@ -64,8 +70,8 @@ public class TeamController {
         return ResponseEntity.ok(retrospect);
     }
 
-    @GetMapping("/{id}/retrospecto-adversarios")
-    public ResponseEntity<List<RetrospectVersusDTO>> getRetrospectAgainstRivals(@PathVariable Long id) {
+    @GetMapping("/retrospect-versus/{id}")
+    public ResponseEntity<List<RetrospectVersusDTO>> getRetrospectAgainstRivals(@PathVariable Long id/*, @PathVariable Long id2*/) {
         List<RetrospectVersusDTO> retrospectVersus = teamService.getRetrospectVersusRivals(id);
         return ResponseEntity.ok(retrospectVersus);
     }

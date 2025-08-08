@@ -10,11 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    Page<Team> findByNameContainingIgnoreCase(String name, Pageable pageable);
-    Page<Team> findByState(String state, Pageable pageable);
+    Page<Team> findByTeamNameContainingIgnoreCase(String teamName, Pageable pageable);
+    Page<Team> findByTeamState(String teamState, Pageable pageable);
     Page<Team> findByActive(boolean active, Pageable pageable);
-    Page<Team> findByNameContainingIgnoreCaseAndState(String name, String state, Pageable pageable);
-    Page<Team> findByNameContainingIgnoreCaseAndActive(String name, boolean active, Pageable pageable);
-    Page<Team> findByStateAndActive(String state, boolean active, Pageable pageable);
-    Page<Team> findByNameContainingIgnoreCaseAndStateAndActive(String name, String state, boolean active, Pageable pageable);
+
+    Page<Team> findByTeamNameContainingIgnoreCaseAndTeamState(String teamName, String teamState, Pageable pageable);
+    Page<Team> findByTeamNameContainingIgnoreCaseAndActive(String teamName, boolean active, Pageable pageable);
+    Page<Team> findByTeamStateAndActive(String teamState, boolean active, Pageable pageable);
+    Page<Team> findByTeamNameContainingIgnoreCaseAndTeamStateAndActive(String teamName, String teamState, boolean active, Pageable pageable);
 }
