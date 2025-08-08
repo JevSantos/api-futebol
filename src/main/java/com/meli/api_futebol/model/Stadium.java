@@ -23,6 +23,9 @@ public class Stadium {
     @Column(name = "stadium_address", nullable = true)
     private String address;
 
+    @Column(name = "stadium_neighborhood",nullable = true)
+    private String neighborhood;
+
     @Column(name = "stadium_city",nullable = true)
     private String stadiumCity;
 

@@ -1,7 +1,9 @@
 package com.meli.api_futebol.dto;
 
 import lombok.Data;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
+@EnableSpringDataWebSupport
 @Data
 public class ViaCepResponseDTO {
     private String cep;

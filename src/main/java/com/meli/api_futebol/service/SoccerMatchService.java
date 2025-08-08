@@ -148,17 +148,12 @@ public class SoccerMatchService {
     }
 
     public List<RankingDTO> getRanking(String criteria) {
-        switch (criteria) {
-            case "jogos":
-                return soccerMatchRepository.rankingByPlays();
-            case "victories":
-                return soccerMatchRepository.rankingByVictories();
-            case "gols":
-                return soccerMatchRepository.rankingByGoals();
-            case "pontos":
-                return soccerMatchRepository.rankingByPoints();
-            default:
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Criterio de classificação inválido");
-        }
+        return switch (criteria) {
+            case "jogos" -> soccerMatchRepository.rankingByPlays();
+            case "victories" -> soccerMatchRepository.rankingByVictories();
+            case "gols" -> soccerMatchRepository.rankingByGoals();
+            case "pontos" -> soccerMatchRepository.rankingByPoints();
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Critério de classificação inválido");
+        };
     }
 }

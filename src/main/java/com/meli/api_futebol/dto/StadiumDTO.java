@@ -1,9 +1,10 @@
 package com.meli.api_futebol.dto;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
+@EnableSpringDataWebSupport
 public record StadiumDTO(
         @NotBlank(message = "Nome do estádio é obrigatório")
         String stadiumName,

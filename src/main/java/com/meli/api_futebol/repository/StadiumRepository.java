@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StadiumRepository extends JpaRepository<Stadium, Long> {
     Page<Stadium> findAll(Pageable pageable);
+
+    Stadium findByStadiumName(String name);
 }

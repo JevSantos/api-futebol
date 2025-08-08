@@ -8,7 +8,7 @@ class ApiFutebolApplicationTests {
 
 	@Test
 	void contextLoads() {
-		assert true;
+	//	assert true;
 	}
 
 }

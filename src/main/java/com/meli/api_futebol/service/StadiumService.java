@@ -4,6 +4,7 @@ import com.meli.api_futebol.dto.StadiumDTO;
 import com.meli.api_futebol.dto.ViaCepResponseDTO;
 import com.meli.api_futebol.model.Stadium;
 import com.meli.api_futebol.repository.StadiumRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ public class StadiumService {
     private final StadiumRepository stadiumRepository;
     private final RestTemplate restTemplate;
 
+    @Transactional
     public Stadium createStadium(StadiumDTO dto) {
         Stadium stadium = new Stadium();
         stadium.setStadiumName(dto.stadiumName());
@@ -29,17 +31,22 @@ public class StadiumService {
             if (viaCepData != null) {
                 stadium.setCep(viaCepData.getCep());
                 stadium.setAddress(viaCepData.getLogradouro());
-                //stadium.setNeighborhood(viaCepData.getBairro());
+                stadium.setNeighborhood(viaCepData.getBairro());
                 stadium.setStadiumState(viaCepData.getUf());
                 stadium.setStadiumCity(viaCepData.getLocalidade());
             }
         }
         return stadiumRepository.save(stadium);
     }
+
+    @Transactional
     public Stadium updateStadium(Long id, StadiumDTO dto) {
         Stadium stadium = findStadiumById(id);
         stadium.setStadiumName(dto.stadiumName());
         stadium.setStadiumOwner(dto.stadiumOwner());
+        stadium.setCep(dto.cep());
+
+
         return stadiumRepository.save(stadium);
     }
     public Stadium findStadiumById(Long id) {
@@ -47,7 +54,7 @@ public class StadiumService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estádio não encontrado"));
     }
 
-    public Page<Stadium> listStadium(@PageableDefault(sort = "stadiumName") Pageable pageable) {
+    public Page<Stadium> listStadium(@PageableDefault(sort = "stadiumName", size = 30) Pageable pageable) {
         return stadiumRepository.findAll(pageable);
     }
 
@@ -56,13 +63,24 @@ public class StadiumService {
         stadiumRepository.delete(stadium);
     }
 
+
     private ViaCepResponseDTO fetchAddressFromViaCep(String cep) {
         try {
             String url = "https://viacep.com.br/ws/" + cep + "/json/";
-            return restTemplate.getForObject(url, ViaCepResponseDTO.class);
+            ViaCepResponseDTO response = restTemplate.getForObject(url, ViaCepResponseDTO.class);
+            if (response != null && response.getLogradouro() == null && response.getBairro() == null && response.getUf() == null) {
+                System.err.println("CEP " + cep + " não encontrado ou inválido pela ViaCEP.");
+                return null;
+            }
+            return response;
         } catch (Exception e) {
-            System.err.println("Erro ao buscar CEP na ViaCEP: " + e.getMessage());
+            System.err.println("Erro ao buscar CEP " + cep + " na ViaCEP: " + e.getMessage());
             return null;
         }
+    }
+
+    public Stadium findStadiumByName(String stadiumName) {
+        return stadiumRepository.findByStadiumName(stadiumName);
+               // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estádio nao encontrado"));
     }
 }

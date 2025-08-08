@@ -5,11 +5,13 @@ import com.meli.api_futebol.model.Stadium;
 import com.meli.api_futebol.service.StadiumService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,12 +22,14 @@ public class StadiumController {
     private final StadiumService stadiumService;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<Stadium> createStadium(@RequestBody @Valid StadiumDTO dto) {
         Stadium stadium = stadiumService.createStadium(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(stadium);
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<Stadium> updateStadium(@PathVariable Long id, @RequestBody @Valid StadiumDTO dto) {
         Stadium stadium = stadiumService.updateStadium(id, dto);
         return ResponseEntity.ok(stadium);
@@ -38,7 +42,7 @@ public class StadiumController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<Stadium>> listStadium(@PageableDefault(sort = "stadiumName", size = 30) Pageable pageable) {
         Page<Stadium> estadios = stadiumService.listStadium(pageable);
         return ResponseEntity.ok(estadios);
     }

@@ -1,0 +1,648 @@
+{
+	"info": {
+		"_postman_id": "ef345bfc-34c5-4062-8b98-84cf49f7b356",
+		"name": "API-Futebol",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46484744",
+		"_collection_link": "https://jeverson-2223682.postman.co/workspace/Jeverson's-Workspace~b82f3ed3-40c6-4899-8a99-c4f794970a07/collection/46484744-ef345bfc-34c5-4062-8b98-84cf49f7b356?action=share&source=collection_link&creator=46484744"
+	},
+	"item": [
+		{
+			"name": "Times",
+			"item": [
+				{
+					"name": "listar times",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/clubes/teams-list",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes",
+								"teams-list"
+							],
+							"query": [
+								{
+									"key": "paged",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "unpaged",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "last",
+									"value": "ture",
+									"disabled": true
+								},
+								{
+									"key": "first",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar time por id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/clubes/24",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "criar time",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"teamName\": \"Teste45\",\n    \"teamState\": \"MG\",\n    \"creationDate\": \"2000-01-30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/clubes",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editar time",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"teamName\": \"Teste45\",\n    \"teamState\": \"MG\",\n    \"creationDate\": \"2008-01-30\",\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/clubes/24",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desativar-time",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/clubes/24",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ativar-time",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/clubes/24/activate",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes",
+								"24",
+								"activate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Estádio",
+			"item": [
+				{
+					"name": "Listar",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/estadios",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"estadios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar po Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/estadios/6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"estadios",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Estádio",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stadiumName\": \"teste de Estádio\",\n  \"stadiumOwner\": \"testador\",\n  \"cep\": \"03010-020\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/estadios",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"estadios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Estadio",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stadiumName\": \"Arena Corinthians\",\n  \"stadiumOwner\": \"SC Corinthians\",\n  \"cep\": \"08295-005\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/estadios/6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"estadios",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stadiumName\": \"Campo do Ibão\",\n  \"stadiumCity\": \"Osasco\",\n  \"stadiumOwner\": \"Ibis FC\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/api/estadios/21",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"api",
+								"estadios",
+								"21"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partidas",
+			"item": [
+				{
+					"name": "Listar Partidas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stadiumName\": \"Campo do Ibão\",\n  \"stadiumCity\": \"Osasco\",\n  \"stadiumOwner\": \"Ibis FC\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/partidas",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Partida por Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stadiumName\": \"Campo do Ibão\",\n  \"stadiumCity\": \"Osasco\",\n  \"stadiumOwner\": \"Ibis FC\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/partidas/6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar partida",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"homeTeamId\": 9,\n  \"awayTeamId\": 1,\n  \"goalsHomeTeam\": 1,\n  \"goalsAwayTeam\": 1,\n  \"stadiumId\": 9,\n  \"matchDateTime\": \"2025-05-10T16:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/partidas",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar partida",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"homeTeamId\": 6,\n  \"awayTeamId\": 7,\n  \"goalsHomeTeam\": 8,\n  \"goalsAwayTeam\": 0,\n  \"stadiumId\": 7,\n  \"matchDateTime\": \"2025-05-10T16:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/api/partidas/22",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"api",
+								"partidas",
+								"22"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar partida",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"homeTeamId\": 3,\n  \"awayTeamId\": 2,\n  \"goalsHomeTeam\": 4,\n  \"goalsAwayTeam\": 5,\n  \"stadiumId\": 12,\n  \"matchDateTime\": \"2025-05-10T16:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/api/partidas/23",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"api",
+								"partidas",
+								"23"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para as partidas de futebol."
+		},
+		{
+			"name": "Avançadas",
+			"item": [
+				{
+					"name": "retrospectro do time",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/clubes/6/retrospect",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"clubes",
+								"6",
+								"retrospect"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ranking",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"homeTeamId\": 3,\n  \"awayTeamId\": 2,\n  \"goalsHomeTeam\": 4,\n  \"goalsAwayTeam\": 5,\n  \"stadiumId\": 12,\n  \"matchDateTime\": \"2025-05-10T16:00:00\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/partidas/ranking?criteria=jogos",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas",
+								"ranking"
+							],
+							"query": [
+								{
+									"key": "criteria",
+									"value": "jogos"
+								},
+								{
+									"key": "criteria",
+									"value": "pontos",
+									"disabled": true
+								},
+								{
+									"key": "criteria",
+									"value": "gols",
+									"disabled": true
+								},
+								{
+									"key": "criteria",
+									"value": "victories",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confrontos",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/partidas/confrontos?team1Id=6&team2Id=7",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas",
+								"confrontos"
+							],
+							"query": [
+								{
+									"key": "team1Id",
+									"value": "6"
+								},
+								{
+									"key": "team2Id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrospecto dos Confrontos ",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/partidas/confrontos/retrospecto?team1Id=8&team2Id=6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas",
+								"confrontos",
+								"retrospecto"
+							],
+							"query": [
+								{
+									"key": "team1Id",
+									"value": "8"
+								},
+								{
+									"key": "team2Id",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Goleadas",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/partidas/goleadas?teamId=6",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"partidas",
+								"goleadas"
+							],
+							"query": [
+								{
+									"key": "teamId",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:8080",
+			"type": "default"
+		}
+	]
+}

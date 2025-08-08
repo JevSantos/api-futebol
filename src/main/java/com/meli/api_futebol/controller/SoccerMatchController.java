@@ -48,13 +48,13 @@ public class SoccerMatchController {
         return ResponseEntity.ok(soccermatch);
     }
 
-    @GetMapping("/partidas")
+    @GetMapping("/list")
     public ResponseEntity<Page<SoccerMatch>> list(
             @RequestParam(required = false) Long teamId,
             @RequestParam(required = false) Long stadiumId,
             @PageableDefault(sort = "matchDateTime", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<SoccerMatch> matches = soccerMatchService.listMatch(teamId, stadiumId, pageable);
+        Page<SoccerMatch> matches = soccerMatchService.listMatch(teamId, stadiumId,pageable);
         return ResponseEntity.ok(matches);
     }
 
